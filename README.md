@@ -188,4 +188,4 @@ Start the main chat loop for user interaction.
 - [winsound Documentation](https://docs.python.org/3/library/winsound.html)
 - [getpass Documentation](https://docs.python.org/3/library/getpass.html)
 - [json Documentation](https://docs.python.org/3/library/json.html)
-- [TextStyle Documentation](TextStyle.md)
+- [TextStyle Documentation](documentation/TextStyle.md)
