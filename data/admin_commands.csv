@@ -1,0 +1,3 @@
+command,password,prefix
+clear responses,admin123,sudo
+clear unrecognized,admin123,sudo

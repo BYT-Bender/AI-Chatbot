@@ -1,0 +1,7 @@
+re
+pandas
+datetime
+pyttsx3
+winsound
+getpass
+json

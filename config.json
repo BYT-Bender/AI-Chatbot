@@ -1,0 +1,12 @@
+{
+    "bot_name": "Chatbot",
+    "user_name": "You",
+    "speak_response": true,
+    "system_sound": true,
+    "response_file": "data/responses.csv",
+    "unrecognized_file": "data/unrecognized.csv",
+    "commands_file": "data/admin_commands.csv",
+    "admin_password": "1234",
+    "admin_prefix": "sudo",
+    "voice": 1
+}
