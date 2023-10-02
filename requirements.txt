@@ -5,3 +5,4 @@ pyttsx3
 winsound
 getpass
 json
+wikipedia-api
