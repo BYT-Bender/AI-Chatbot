@@ -1,10 +1,15 @@
 from flask import Flask, request, jsonify
-from root import Chatbot
+from chatbot import Chatbot
 from flask import send_from_directory
 from intents_data import intents
+import json
 
 app = Flask(__name__, static_url_path='', static_folder='assets')
-chatbot = Chatbot(response_file="data/responses.csv", patterns=intents, unrecognized_file="data/unrecognized.csv")
+
+with open("config.json", "r") as config_file:
+    config = json.load(config_file)
+
+chatbot = Chatbot(config)
 
 @app.route('/process', methods=['POST'])
 def process():
