@@ -1,0 +1,372 @@
+{
+    "intents": [
+        {
+            "id": 1,
+            "tag": "greeting",
+            "patterns": [
+                "Hello",
+                "Greetings!",
+                "Hey",
+                "Hey there!",
+                "Hi",
+                "Nice to see you!",
+                "Good to have you here!",
+                "Good morning!",
+                "Good afternoon!",
+                "Good evening!"
+            ],
+            "responses": [
+                "Hi there, how can I help?",
+                "Hello! How can I assist you today?"
+            ]
+        },
+        {
+            "id": 2,
+            "tag": "greeting_v2",
+            "patterns": [
+                "How are you?",
+                "How are you today?",
+                "Hey, how's it going?"
+            ],
+            "responses": [
+                "As an AI language model, I don't have feelings or emotions, but thank you for asking! I'm here to help you with any questions or information you need. How can I assist you today?"
+            ]
+        },
+        {
+            "id": 3,
+            "tag": "goodbye",
+            "patterns": [
+                "Bye!",
+                "Ok bye!",
+                "Bye bye!",
+                "Farewell!",
+                "Take care!",
+                "Goodbye!",
+                "Goodbye, have a wonderful day!",
+                "Until next time!",
+                "See you later!",
+                "Wishing you all the best!",
+                "Have a great day ahead!",
+                "Goodbye, stay safe!",
+                "Take care!",
+                "Take care and farewell!",
+                "Until we meet again!"
+            ],
+            "responses": [
+                "See you!",
+                "Have a nice day",
+                "Bye! Come back again soon.",
+                "Goodbye! Have a great day!"
+            ]
+        },
+        {
+            "id": 4,
+            "tag": "thanks",
+            "patterns": [
+                "Thanks",
+                "Thanks a lot!",
+                "I appreciate it!",
+                "Much appreciated!",
+                "Many thanks!",
+                "Thank you!",
+                "Thankyou!",
+                "Thank you very much!",
+                "Thank you so much!",
+                "I'm grateful for your help!",
+                "Thanks a million!",
+                "I can't thank you enough!",
+                "Much obliged!",
+                "Thank you for your assistance!",
+                "I'm so thankful for your support!"
+            ],
+            "responses": [
+                "My pleasure",
+                "You're Welcome",
+                "You're welcome! If you have any more questions, feel free to ask."
+            ]
+        },
+        {
+            "id": 5,
+            "tag": "apology",
+            "patterns": [
+                "Sorry.",
+                "Apologies.",
+                "I apologize.",
+                "My apologies.",
+                "Pardon me.",
+                "Excuse me.",
+                "I'm sorry for my mistake.",
+                "I am sorry for my mistake.",
+                "Forgive me.",
+                "Please forgive me."
+            ],
+            "responses": [
+                "No need to apologize! If you have any further questions or need assistance with anything, feel free to let me know. I'm here to help."
+            ]
+        },
+        {
+            "id": 6,
+            "tag": "question_AI_name",
+            "patterns": [
+                "Name?",
+                "What is your name?",
+                "What's your name?",
+                "May I know your name?",
+                "Could you please tell me your name?",
+                "What do you go by?",
+                "What should I call you?",
+                "Do you have a name?",
+                "Would you mind sharing your name?",
+                "May I inquire about your name?",
+                "What's the name you prefer to be called?",
+                "Can you provide me with your name?",
+                "Could you introduce yourself?",
+                "What are you called?"
+            ],
+            "responses": [
+                "I am an AI language model developed by SCARAB called Stella. I don't have a personal name as I'm just a program designed to assist with answering questions and engaging in conversation. How can I assist you further?"
+            ]
+        },
+        {
+            "id": 7,
+            "tag": "question_AI_age",
+            "patterns": [
+                "How old are you?",
+                "What is your age?",
+                "How many years have you been around?",
+                "When were you born?",
+                "Can I ask how old you are?",
+                "What's your age?",
+                "Do you mind sharing your age?",
+                "May I inquire about your age?",
+                "Could you let me know how many years you've lived?",
+                "Can you tell me your age?",
+                "Are you comfortable disclosing your age?"
+            ],
+            "responses": [
+                "As an AI language model, I don't possess personal attributes such as age. I am a computer program created by SCARAB, so I don't have a physical form or experience time in the same way humans do. My purpose is to provide information and assist with any questions you may have to the best of my abilities."
+            ]
+        },
+        {
+            "id": 8,
+            "tag": "question_AI_origin",
+            "patterns": [
+                "where are you from"
+            ],
+            "responses": [
+                "As an AI language model, I don't have a specific place of origin. However, the technology behind my development and the infrastructure that supports me are the products of the collective efforts of Sourabh, Ashvani and Rachit (Not really) at SCARAB, an organization based in Amritsar, Punjab, India."
+            ]
+        },
+        {
+            "id": 9,
+            "tag": "question_AI_siblings",
+            "patterns": [
+                "do you have any siblings"
+            ],
+            "responses": [
+                "As an AI language model, I don't have personal experiences or relationships, so I don't have siblings or any familial connections. I exist solely as a program designed to provide information and engage in conversation."
+            ]
+        },
+        {
+            "id": 10,
+            "tag": "scarab_full_form",
+            "patterns": [
+                "what does scarab stands for"
+            ],
+            "responses": [
+                "SCARAB stands for Strategic Consortium for Augmented Reality and Beyond."
+            ]
+        },
+        {
+            "id": 11,
+            "tag": "checking_weather",
+            "patterns": [
+                "weather forecast",
+                "what is the weather today",
+                "what's the weather today",
+                "what's the weather like today",
+                "weather report",
+                "weather update"
+            ],
+            "responses": [
+                "I apologize, but as an AI language model, I don't have access to real-time data, including current weather information. To find out the weather for today, I recommend checking a reliable weather website or using a weather app on your smartphone or computer."
+            ]
+        },
+        {
+            "id": 12,
+            "tag": "joke",
+            "patterns": [
+                "Tell me a joke.",
+                "Do you know any joke?"
+            ],
+            "responses": [
+                "Why don't scientists trust atoms? Because they make up everything!",
+                "Parallel lines have so much in common. It's a shame they'll never meet.",
+                "I told my wife she was drawing her eyebrows too high. She looked surprised.",
+                "How do you organize a space party? You 'planet'!",
+                "Why did the scarecrow win an award? Because he was outstanding in his field!",
+                "I used to play piano by ear, but now I use my hands.",
+                "Did you hear about the mathematician who's afraid of negative numbers? He'll stop at nothing to avoid them!",
+                "What do you call a fish with no eyes? Fsh.",
+                "Why did the bicycle fall over? Because it was two-tired.",
+                "What do you call a snowman with a six-pack? An abdominal snowman!"
+            ]
+        },
+        {
+            "id": 13,
+            "tag": "music_recommendation",
+            "patterns": [
+                "Can you recommend some music?",
+                "I need music suggestions.",
+                "What songs should I listen to?"
+            ],
+            "responses": [
+                "Of course! What genre or mood are you in, and I'll recommend some songs for you."
+            ]
+        },
+        {
+            "id": 14,
+            "tag": "movie_recommendation",
+            "patterns": [
+                "Suggest a good movie to watch.",
+                "What's a great film to see tonight?",
+                "Any movie recommendations for me?"
+            ],
+            "responses": [
+                "Sure thing! What type of movie are you in the mood for? Comedy, drama, action, or something else?"
+            ]
+        },
+        {
+            "id": 15,
+            "tag": "book_recommendation",
+            "patterns": [
+                "I need a good book to read.",
+                "Recommend a book, please.",
+                "What book should I pick up next?"
+            ],
+            "responses": [
+                "Certainly! Do you have any preferred genre or author in mind, or are you open to exploring different options?"
+            ]
+        },
+        {
+            "id": 16,
+            "tag": "fun_fact",
+            "patterns": [
+                "Tell me a fun fact.",
+                "Share an interesting fact.",
+                "Give me a random piece of trivia."
+            ],
+            "responses": [
+                "Sure! Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible."
+            ]
+        },
+        {
+            "id": 17,
+            "tag": "gaming_recommendation",
+            "patterns": [
+                "Recommend a game to play.",
+                "What game should I try next?",
+                "Any good games you can suggest?"
+            ],
+            "responses": [
+                "Of course! What type of games do you enjoy? Are you into action, strategy, or something else?"
+            ]
+        },
+        {
+            "id": 18,
+            "tag": "recipe_recommendation",
+            "patterns": [
+                "I need a recipe idea.",
+                "What should I cook for dinner?",
+                "Can you suggest a recipe?"
+            ],
+            "responses": [
+                "Sure! What type of cuisine or ingredients are you in the mood for?"
+            ]
+        },
+        {
+            "id": 19,
+            "tag": "inspirational_quote",
+            "patterns": [
+                "Share an inspirational quote.",
+                "I could use some motivation. Give me a quote.",
+                "Inspire me with a quote, please."
+            ],
+            "responses": [
+                "Of course! Here's an inspirational quote: 'The only way to do great work is to love what you do.' - Steve Jobs"
+            ]
+        },
+        {
+            "id": 20,
+            "tag": "technology_news",
+            "patterns": [
+                "Tell me the latest tech news.",
+                "What's happening in the tech world?",
+                "Any tech updates?"
+            ],
+            "responses": [
+                "I'm sorry, but I don't have access to real-time news. I recommend checking a reliable tech news website or app for the latest updates."
+            ]
+        },
+        {
+            "id": 21,
+            "tag": "programming_help",
+            "patterns": [
+                "I need help with programming.",
+                "Can you assist with coding?",
+                "Give me a programming tip."
+            ],
+            "responses": [
+                "Of course! What programming language or topic do you need assistance with?"
+            ]
+        },
+        {
+            "id": 22,
+            "tag": "travel_recommendation",
+            "patterns": [
+                "I want to plan a trip. Any suggestions?",
+                "Where should I travel next?",
+                "Recommend a travel destination."
+            ],
+            "responses": [
+                "Certainly! Do you have a specific region or type of destination in mind, like a beach, city, or mountain getaway?"
+            ]
+        },
+        {
+            "id": 23,
+            "tag": "pet_advice",
+            "patterns": [
+                "Give me advice on pet care.",
+                "How can I take care of my pet better?",
+                "I need pet tips."
+            ],
+            "responses": [
+                "Sure! What type of pet do you have, and do you have any specific questions about their care?"
+            ]
+        },
+        {
+            "id": 24,
+            "tag": "history_fact",
+            "patterns": [
+                "Tell me a historical fact.",
+                "Share an interesting historical tidbit.",
+                "Give me a history fact."
+            ],
+            "responses": [
+                "Certainly! Did you know that the Great Wall of China is approximately 13,170 miles long? It's one of the most impressive architectural feats in history."
+            ]
+        },
+        {
+            "id": 25,
+            "tag": "quote_of_the_day",
+            "patterns": [
+                "Give me the quote of the day.",
+                "Share a daily inspirational quote.",
+                "I need a daily quote."
+            ],
+            "responses": [
+                "Of course! Here's the quote of the day: 'The only limit to our realization of tomorrow will be our doubts of today.' - Franklin D. Roosevelt"
+            ]
+        }
+    ]
+}
