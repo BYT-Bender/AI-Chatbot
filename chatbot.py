@@ -1,4 +1,4 @@
-# Copyright © 2023 Sourabh Srivastva
+# Copyright © 2023 BYT-Bender
 
 import re
 import pandas as pd
@@ -7,33 +7,72 @@ from getpass import getpass
 import pyttsx3
 import winsound
 import json
-from intents_data import intents
 from formatting import TextStyle
+import random
+from wikipedia_search import WikipediaSearch
+import wikipediaapi
+import requests
+from bs4 import BeautifulSoup
+
+
+# try:
+#     import pyttsx3
+#     print("module 'pyttsx3' is installed.")
+# except ModuleNotFoundError:
+#     print("module 'pyttsx3' is not installed.")
+
+# try:
+#     import winsound
+#     print("module 'winsound' is installed.")
+# except ModuleNotFoundError:
+#     print("module 'winsound' is not installed.")
 
 class Chatbot:
     # Initializing assest
-    def __init__(self, config):
+    def __init__(self, config, wiki_search):
         self.config = config
-        self.initialize_tts()
+        self.log_file = open(self.config["log_file"], 'a')
+        self.log_action(f'Loaded Chatbot with configuration: {self.config}')
+        self.load_assets()
+        self.wiki_search = wiki_search
 
+    def load_assets(self):
         try:
+            self.initialize_tts()
             self.reload_responses()
             self.load_admin_commands()
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error during initialization: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error during initialization: {error}')
             exit(1)
 
         if self.config["system_sound"]:
             winsound.Beep(800, 800)
 
+    def log_action(self, action):
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        log_message = f'[{timestamp}] {action}\n'
+        
+        # Write the log message to the log file
+        self.log_file.write(log_message)
+        self.log_file.flush()  # Ensure the message is written immediately
+    
+    def close_log_file(self):
+        self.log_file.close()
+
     def reload_responses(self):
         try:
-            self.responses = pd.read_csv(self.config["response_file"], encoding="utf-8")
+            with open(self.config["response_file"], "r") as intents_file:
+                intents_data = json.load(intents_file)
+                self.intents = intents_data.get("intents", [])
+            self.log_action(f'Successfully loaded Response file ({self.config["response_file"]})')
         except FileNotFoundError:
             print(f"{TextStyle.fg['R']}Error: Response file not found.{TextStyle.fg['x']}")
+            self.log_action(f'FileNotFoundError: Response file ({self.config["response_file"]})')
             raise
         except Exception as error:
             print(f"{TextStyle.fg['R']}An error occurred while loading responses: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Failed to load Response file ({self.config["response_file"]})')
             raise
     
     def load_admin_commands(self):
@@ -43,11 +82,14 @@ class Chatbot:
             self.admin_commands = commands_df["command"].values.tolist()
             self.admin_password = commands_df["password"].values[0]
             self.admin_prefix = commands_df["prefix"].values[0]
+            self.log_action(f'Successfully loaded Commands file ({self.config["commands_file"]})')
         except FileNotFoundError:
             print(f"{TextStyle.fg['R']}Error: Commands file not found.{TextStyle.fg['x']}")
+            self.log_action(f'FileNotFoundError: Commands file ({self.config["commands_file"]})')
             raise
         except Exception as error:
             print(f"{TextStyle.fg['R']}An error occurred while loading admin commands: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Failed to load Commands file ({self.config["commands_file"]})')
             raise
     
     def initialize_tts(self):        
@@ -55,11 +97,13 @@ class Chatbot:
             self.tts_engine = pyttsx3.init()
             voices = self.tts_engine.getProperty('voices')
             self.tts_engine.setProperty('voice', voices[self.config["voice"]].id)
+            self.log_action(f'Successfully initialized TTS engine')
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error initializing TTS engine: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Failed to initialize TTS engine')
             self.tts_engine = None
 
-    # Reload assests while program is running
+    # Reload assets while program is running
     def reload_chatbot(self, reload_responses=True, reload_admin_commands=True):
         try:
             if reload_responses:
@@ -75,7 +119,8 @@ class Chatbot:
 
             # print("Chatbot successfully reloaded!")
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error during chatbot reload: {error}{TextStyle.fg['x']}")
+            print(f"{TextStyle.fg['R']}Error during Chatbot reload: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error during Chatbot reload: {error}')
 
     # NLP
     def preprocess_text(self, text):
@@ -87,26 +132,20 @@ class Chatbot:
             return text
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error during text preprocessing: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error during text preprocessing: {error}')
             return text
-
-    # intents dictionary => DataFrame
-    patterns_data = []
-    for intent_id, intent_data in intents.items():
-        for phrase in intent_data["phrases"]:
-            patterns_data.append([intent_id, phrase])
-    patterns_df = pd.DataFrame(patterns_data, columns=["intent_id", "pattern"])
 
     # Finding pattern (Not really)
     def match_pattern(self, user_message):
         try:
-            for _, row in self.patterns_df.iterrows():
-                pattern = row["pattern"]
-                intent_id = row["intent_id"]
-                if re.search(self.preprocess_text(pattern), user_message):
-                    return intent_id
+            for intent in self.intents:
+                for pattern in intent["patterns"]:
+                    if re.search(self.preprocess_text(pattern), user_message):
+                        return intent
             return None
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error during pattern matching: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error during pattern matching: {error}')
             return None
 
     def update_unrecognized_file(self, user_message):
@@ -129,6 +168,7 @@ class Chatbot:
                 df.to_csv(self.config["unrecognized_file"], mode="w", header=True, index=False)
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error updating unrecognized file: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error updating unrecognized file: {error}')
 
     def handle_admin_command(self, command):
         try:
@@ -140,13 +180,13 @@ class Chatbot:
                     self.clear_unrecognized()
                 else:
                     print(f"{TextStyle.fg['Y']}Invalid command.{TextStyle.fg['x']}")
+                    self.log_action(f'Invalid command: {command}')
             else:
                 print(f"{TextStyle.fg['Y']}Invalid password.{TextStyle.fg['x']}")
+                self.log_action(f'Invalid password.')
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error handling admin command: {error}{TextStyle.fg['x']}")
-
-    # def clear_patterns(self):
-    #     self.clear_file(self.pattern_file, ["response_id", "pattern"], "Patterns")
+            self.log_action(f'Error handling admin command: {error}')
 
     def clear_responses(self):
         try:
@@ -164,23 +204,95 @@ class Chatbot:
         try:
             pd.DataFrame(columns=columns).to_csv(file_path, mode="w", header=True, index=False)
             print(f"{TextStyle.fg['G']}{name} cleared...{TextStyle.fg['x']}")
+            self.log_action(f'Cleared {name}')
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error clearing {name.lower()}: {error}{TextStyle.fg['x']}")
-        
+            self.log_action(f'Error clearing: {name.lower()}')
+
+    def update_analize_data(self, id):
+        try:
+            df = pd.read_csv(self.config["analize_data_file"], encoding="utf-8")
+            existing_entry = df[df["id"] == id]
+            if existing_entry.empty:
+                new_entry = pd.DataFrame({
+                    "id": [id],
+                    "count": [1]
+                })
+                new_entry.to_csv(self.config["analize_data_file"], mode="a", header=False, index=False)
+            else:
+                index = existing_entry.index[0]
+                df.at[index, "count"] += 1
+                df.to_csv(self.config["analize_data_file"], mode="w", header=True, index=False)
+        except Exception as error:
+            print(f"{TextStyle.fg['R']}Error updating analyzing data file: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error updating analyzing data file: {error}')
+
     def generate_response(self, user_message):
         try:
             user_message = self.preprocess_text(user_message)
-            intent_id = self.match_pattern(user_message)
-            if intent_id is not None:
-                matched_response = self.responses.loc[self.responses["response_id"] == intent_id]
-                if not matched_response.empty:
-                    return matched_response["bot_response"].values[0]
+
+            # Check if the user's input starts with "What is"
+            if user_message.startswith("what is"):
+                # Extract the search query (text after "What is")
+                search_query = user_message[7:].strip()
+
+                # Define a custom user agent
+                custom_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+
+                # Define the Wikipedia API URL
+                wikipedia_api_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&titles={search_query}&prop=extracts&exintro=1"
+
+                # Make the HTTP request with the custom user agent
+                headers = {"User-Agent": custom_user_agent}
+                response = requests.get(wikipedia_api_url, headers=headers)
+                data = response.json()
+
+                # Extract the page content
+                pages = data.get("query", {}).get("pages", {})
+                page = next(iter(pages.values()), None)
+
+                if page and "extract" in page:
+                    response_html = page["extract"]
+
+                    # Use BeautifulSoup to parse and clean the HTML response
+                    soup = BeautifulSoup(response_html, 'html.parser')
+
+                    # Allow only specified tags, and convert them to strings
+                    # allowed_tags = ['i', 'b', 'u']
+                    # for tag in soup.find_all(True):
+                    #     if tag.name not in allowed_tags:
+                    #         tag.unwrap()
+                    # cleaned_html = str(soup).strip()
+                    
+                    response_text = soup.select('p ~ p')[0].get_text().strip()
+
+                    # first_paragraph = soup.find('p').get_text()
+                    # response_text = first_paragraph.strip()
+
+                    # response_text = soup.get_text().strip()  # [:500]
+                else:
+                    response_text = "I couldn't find detailed information on that topic in Wikipedia."
+
+                # Log and return the Wikipedia search response
+                self.log_action(f'Chatbot responded to `{user_message}` with Wikipedia search result')
+                return response_text
+
+            # If the user's input doesn't match the "What is" pattern, proceed with pattern matching
+            intent = self.match_pattern(user_message)
+            if intent and "responses" in intent:
+                response_id = intent["id"]
+                response = random.choice(intent["responses"])
+                self.update_analize_data(response_id)
+                self.log_action(f'Chatbot responded to `{user_message}` with ({response_id}) `{response}`')
+                return response
 
             self.update_unrecognized_file(user_message)
-            return "I'm sorry, I don't understand. Can you please rephrase?"
+            self.log_action(f'Chatbot failed to respond to `{user_message}`')
+            return self.config["fallback_response"]
+
         except Exception as error:
-            # print(f"{TextStyle.fg['R']}An error occurred while generating a response.{TextStyle.fg['x']}")
             print(f"{TextStyle.fg['R']}Error generating response: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error generating response: {error}')
             return None
 
     def speak(self, text):
@@ -190,16 +302,18 @@ class Chatbot:
                 self.tts_engine.runAndWait()
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error during text-to-speech: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error during text-to-speech: {error}')
 
     def main(self):
         print(f"{TextStyle.fg['G']}Welcome to the chatbot! Type 'exit' to end the conversation.{TextStyle.fg['x']}")
-        self.load_admin_commands()
 
         try:
             while True:
                 user_message = input(f'{self.config["user_name"]}: ')
                 if user_message.lower() == "exit" or user_message.lower() == "quit":
                     print(f"{TextStyle.fg['Y']}Chat ended{TextStyle.fg['x']}")
+                    self.log_action(f'Status change detected: stopped')
+                    chatbot.close_log_file()
                     break
 
                 # Handling reload commands
@@ -225,8 +339,8 @@ class Chatbot:
                 print(f'{self.config["bot_name"]}: ' + bot_reply)
                 self.speak(bot_reply)
 
-        except Exception as e:
-            print(f"{TextStyle.fg['R']}An error occurred: {e}{TextStyle.fg['x']}")
+        except Exception as error:
+            print(f"{TextStyle.fg['R']}An error occurred: {error}{TextStyle.fg['x']}")
         finally:
             if self.tts_engine is not None:
                 self.tts_engine.stop()
@@ -237,7 +351,10 @@ if __name__ == "__main__":
         with open("config.json", "r") as config_file:
             config = json.load(config_file)
 
-        chatbot = Chatbot(config)
+        wiki_search = WikipediaSearch({"User-Agent": config["user_agent"]})
+        chatbot = Chatbot(config, wiki_search)
+        
+        chatbot.log_action("Status change detected: running")
         chatbot.main()
     except FileNotFoundError:
         print(f"{TextStyle.fg['R']}Error: Config file not found.{TextStyle.fg['x']}")
