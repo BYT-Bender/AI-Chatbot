@@ -3,10 +3,14 @@
     "user_name": "You",
     "speak_response": true,
     "system_sound": true,
-    "response_file": "data/responses.csv",
+    "response_file": "intents.json",
     "unrecognized_file": "data/unrecognized.csv",
     "commands_file": "data/admin_commands.csv",
     "admin_password": "1234",
     "admin_prefix": "sudo",
-    "voice": 1
+    "voice": 1,
+    "fallback_response": "I'm sorry, I don't understand. Can you please rephrase your question or provide more details?",
+    "analize_data_file": "data/response_data.csv",
+    "log_file": "log.txt",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
 }
