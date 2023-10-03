@@ -1,0 +1,10 @@
+{
+    "atomic_mass": "u",
+    "density": "g/cm^3",
+    "boiling_point": "K",
+    "melting_point": "K",
+    "atomic_radius": "μ",
+    "electronegativity": 2.20,
+    "ionization_energy": "kJ/mol",
+    "abundance_crust": "mg/kg"
+}
