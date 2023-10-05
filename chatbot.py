@@ -1,5 +1,4 @@
 # Copyright © 2023 BYT-Bender
-
 import re
 import pandas as pd
 from datetime import datetime
@@ -78,10 +77,24 @@ class Chatbot:
     def load_admin_commands(self):
         try:
             commands_df = pd.read_csv(self.config["commands_file"], encoding="utf-8")
+
             # self.admin_commands = dict(zip(commands_df["command"], commands_df["function"]))
-            self.admin_commands = commands_df["command"].values.tolist()
+            # self.admin_commands = commands_df["command"].values.tolist()
+
+            self.admin_commands = {}
+            for index, row in commands_df.iterrows():
+                command = row["command"]
+                function = row["function"]
+                arguments = row["arguments"]
+                if not pd.isna(arguments):
+                    arguments = [arg.strip() for arg in arguments.split(",") if arg.strip()]
+                else:
+                    arguments = []
+                self.admin_commands[command] = {"function": function, "arguments": arguments}
+            
             self.admin_password = commands_df["password"].values[0]
             self.admin_prefix = commands_df["prefix"].values[0]
+
             self.log_action(f'Successfully loaded Commands file ({self.config["commands_file"]})')
         except FileNotFoundError:
             print(f"{TextStyle.fg['R']}Error: Commands file not found.{TextStyle.fg['x']}")
@@ -174,10 +187,18 @@ class Chatbot:
         try:
             password = getpass(f"{TextStyle.fg['B']}Enter admin password: {TextStyle.fg['x']}")
             if password == self.admin_password:
-                if command == self.admin_commands[0]:
-                    self.clear_responses()
-                elif command == self.admin_commands[1]:
-                    self.clear_unrecognized()
+                
+                if command in self.admin_commands:
+                    command_info = self.admin_commands[command]
+                    function_name = command_info["function"]
+                    arguments = command_info["arguments"]
+
+                    if hasattr(self, function_name) and callable(getattr(self, function_name)):
+                        function_to_execute = getattr(self, function_name)
+                        function_to_execute(*arguments)
+                    else:
+                        print(f"{TextStyle.fg['Y']}Invalid command: Function not found.{TextStyle.fg['x']}")
+                        self.log_action(f"Invalid command: Can't find instance of `{function_name}`")
                 else:
                     print(f"{TextStyle.fg['Y']}Invalid command.{TextStyle.fg['x']}")
                     self.log_action(f'Invalid command: {command}')
@@ -187,6 +208,24 @@ class Chatbot:
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error handling admin command: {error}{TextStyle.fg['x']}")
             self.log_action(f'Error handling admin command: {error}')
+            
+    # def handle_admin_command(self, command):
+    #     try:
+    #         password = getpass(f"{TextStyle.fg['B']}Enter admin password: {TextStyle.fg['x']}")
+    #         if password == self.admin_password:
+    #             if command == self.admin_commands[0]:
+    #                 self.clear_responses()
+    #             elif command == self.admin_commands[1]:
+    #                 self.clear_unrecognized()
+    #             else:
+    #                 print(f"{TextStyle.fg['Y']}Invalid command.{TextStyle.fg['x']}")
+    #                 self.log_action(f'Invalid command: {command}')
+    #         else:
+    #             print(f"{TextStyle.fg['Y']}Invalid password.{TextStyle.fg['x']}")
+    #             self.log_action(f'Invalid password.')
+    #     except Exception as error:
+    #         print(f"{TextStyle.fg['R']}Error handling admin command: {error}{TextStyle.fg['x']}")
+    #         self.log_action(f'Error handling admin command: {error}')
 
     def clear_responses(self):
         try:
@@ -231,53 +270,12 @@ class Chatbot:
         try:
             user_message = self.preprocess_text(user_message)
 
-            # Check if the user's input starts with "What is"
+            # Searching wiki
             if user_message.startswith("what is"):
-                # Extract the search query (text after "What is")
-                search_query = user_message[7:].strip()
-
-                # Define a custom user agent
-                custom_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
-
-                # Define the Wikipedia API URL
-                wikipedia_api_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&titles={search_query}&prop=extracts&exintro=1"
-
-                # Make the HTTP request with the custom user agent
-                headers = {"User-Agent": custom_user_agent}
-                response = requests.get(wikipedia_api_url, headers=headers)
-                data = response.json()
-
-                # Extract the page content
-                pages = data.get("query", {}).get("pages", {})
-                page = next(iter(pages.values()), None)
-
-                if page and "extract" in page:
-                    response_html = page["extract"]
-
-                    # Use BeautifulSoup to parse and clean the HTML response
-                    soup = BeautifulSoup(response_html, 'html.parser')
-
-                    # Allow only specified tags, and convert them to strings
-                    # allowed_tags = ['i', 'b', 'u']
-                    # for tag in soup.find_all(True):
-                    #     if tag.name not in allowed_tags:
-                    #         tag.unwrap()
-                    # cleaned_html = str(soup).strip()
-                    
-                    response_text = soup.select('p ~ p')[0].get_text().strip()
-
-                    # first_paragraph = soup.find('p').get_text()
-                    # response_text = first_paragraph.strip()
-
-                    # response_text = soup.get_text().strip()  # [:500]
-                else:
-                    response_text = "I couldn't find detailed information on that topic in Wikipedia."
-
-                # Log and return the Wikipedia search response
-                self.log_action(f'Chatbot responded to `{user_message}` with Wikipedia search result')
+                response_text = self.wikipedia_search(user_message)
                 return response_text
 
-            # If the user's input doesn't match the "What is" pattern, proceed with pattern matching
+            # Offile Response
             intent = self.match_pattern(user_message)
             if intent and "responses" in intent:
                 response_id = intent["id"]
@@ -292,7 +290,47 @@ class Chatbot:
 
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error generating response: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error generating response: {error}')
+            self.log_action(f"Error generating response: {error}")
+            return None
+
+    def wikipedia_search(self, user_message):
+        try:
+            # Extracting search query (after "What is")
+            search_query = user_message[7:].strip()
+
+            custom_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+            wikipedia_api_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&titles={search_query}&prop=extracts&exintro=1"
+
+            # Making HTTP request
+            headers = {"User-Agent": custom_user_agent}
+            response = requests.get(wikipedia_api_url, headers=headers)
+            data = response.json()
+
+            # Extracting page content
+            pages = data.get("query", {}).get("pages", {})
+            page = next(iter(pages.values()), None)
+
+            if page and "extract" in page:
+                response_html = page["extract"]
+                soup = BeautifulSoup(response_html, 'html.parser')
+                
+                # Allow only specified tags, and convert them to strings
+                # allowed_tags = ['i', 'b', 'u']
+                # for tag in soup.find_all(True):
+                #     if tag.name not in allowed_tags:
+                #         tag.unwrap()
+                # cleaned_html = str(soup).strip()
+                
+                response_text = soup.select('p ~ p')[0].get_text().strip()
+            else:
+                response_text = "I couldn't find detailed information on that topic in Wikipedia."
+
+            self.log_action(f'Chatbot responded to `{user_message}` with Wikipedia search result `{response_text}`')
+            return response_text
+
+        except Exception as error:
+            print(f"{TextStyle.fg['R']}Error searching Wikipedia: {error}{TextStyle.fg['x']}")
+            self.log_action(f'Error searching Wikipedia: {error}')
             return None
 
     def speak(self, text):
@@ -344,7 +382,6 @@ class Chatbot:
         finally:
             if self.tts_engine is not None:
                 self.tts_engine.stop()
-
 
 if __name__ == "__main__":
     try:
