@@ -367,6 +367,55 @@
             "responses": [
                 "Of course! Here's the quote of the day: 'The only limit to our realization of tomorrow will be our doubts of today.' - Franklin D. Roosevelt"
             ]
+        },
+        {
+            "id": 26,
+            "tag": "ok",
+            "patterns": [
+                "ok",
+                "okay"
+            ],
+            "responses": [
+                "If you have any more questions or need further information on any topic, please feel free to ask. I'm here to help!"
+            ]
+        },
+        {
+            "id": 27,
+            "tag": "no",
+            "patterns": [
+                "no",
+                "nope"
+            ],
+            "responses": [
+                "That's perfectly fine! If you ever have any questions or need assistance in the future, don't hesitate to reach out. I'm here to help whenever you need it. Have a great day!"
+            ]
+        },
+        {
+            "id": 28,
+            "tag": "ability",
+            "patterns": [
+                "What can you do?",
+                "What else can you do?",
+                "What are your functions?",
+                "What are your abilities?",
+                "How can you help",
+                "What are your features?"
+            ],
+            "responses": [
+                "I can do a wide range of tasks and provide information on various topics."
+            ]
+        },
+        {
+            "id": 29,
+            "tag": "why_AI_name",
+            "patterns": [
+                "What does STELLA stands for?",
+                "Why STELLA?",
+                "What does STELLA mean?"
+            ],
+            "responses": [
+                "STELLA stands for Speech and Text Enhanced Language Learning Assistant."
+            ]
         }
     ]
 }
