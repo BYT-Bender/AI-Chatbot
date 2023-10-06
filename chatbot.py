@@ -1,4 +1,5 @@
 # Copyright © 2023 BYT-Bender
+
 import re
 import pandas as pd
 from datetime import datetime
@@ -12,7 +13,6 @@ from wikipedia_search import WikipediaSearch
 import wikipediaapi
 import requests
 from bs4 import BeautifulSoup
-
 
 # try:
 #     import pyttsx3
@@ -52,9 +52,8 @@ class Chatbot:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         log_message = f'[{timestamp}] {action}\n'
         
-        # Write the log message to the log file
         self.log_file.write(log_message)
-        self.log_file.flush()  # Ensure the message is written immediately
+        self.log_file.flush()
     
     def close_log_file(self):
         self.log_file.close()
@@ -77,9 +76,6 @@ class Chatbot:
     def load_admin_commands(self):
         try:
             commands_df = pd.read_csv(self.config["commands_file"], encoding="utf-8")
-
-            # self.admin_commands = dict(zip(commands_df["command"], commands_df["function"]))
-            # self.admin_commands = commands_df["command"].values.tolist()
 
             self.admin_commands = {}
             for index, row in commands_df.iterrows():
@@ -129,8 +125,7 @@ class Chatbot:
 
             if self.config["system_sound"]:
                 winsound.Beep(1000, 500)
-
-            # print("Chatbot successfully reloaded!")
+                
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error during Chatbot reload: {error}{TextStyle.fg['x']}")
             self.log_action(f'Error during Chatbot reload: {error}')
@@ -208,24 +203,6 @@ class Chatbot:
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error handling admin command: {error}{TextStyle.fg['x']}")
             self.log_action(f'Error handling admin command: {error}')
-            
-    # def handle_admin_command(self, command):
-    #     try:
-    #         password = getpass(f"{TextStyle.fg['B']}Enter admin password: {TextStyle.fg['x']}")
-    #         if password == self.admin_password:
-    #             if command == self.admin_commands[0]:
-    #                 self.clear_responses()
-    #             elif command == self.admin_commands[1]:
-    #                 self.clear_unrecognized()
-    #             else:
-    #                 print(f"{TextStyle.fg['Y']}Invalid command.{TextStyle.fg['x']}")
-    #                 self.log_action(f'Invalid command: {command}')
-    #         else:
-    #             print(f"{TextStyle.fg['Y']}Invalid password.{TextStyle.fg['x']}")
-    #             self.log_action(f'Invalid password.')
-    #     except Exception as error:
-    #         print(f"{TextStyle.fg['R']}Error handling admin command: {error}{TextStyle.fg['x']}")
-    #         self.log_action(f'Error handling admin command: {error}')
 
     def clear_responses(self):
         try:
@@ -270,11 +247,6 @@ class Chatbot:
         try:
             user_message = self.preprocess_text(user_message)
 
-            # Searching wiki
-            if user_message.startswith("what is"):
-                response_text = self.wikipedia_search(user_message)
-                return response_text
-
             # Offile Response
             intent = self.match_pattern(user_message)
             if intent and "responses" in intent:
@@ -283,6 +255,11 @@ class Chatbot:
                 self.update_analize_data(response_id)
                 self.log_action(f'Chatbot responded to `{user_message}` with ({response_id}) `{response}`')
                 return response
+
+            # Searching wiki
+            if user_message.startswith("what is"):
+                response_text = self.wikipedia_search(user_message)
+                return response_text
 
             self.update_unrecognized_file(user_message)
             self.log_action(f'Chatbot failed to respond to `{user_message}`')
