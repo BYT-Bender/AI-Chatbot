@@ -1,17 +1,18 @@
 # Copyright © 2023 BYT-Bender
 
-import re
-import pandas as pd
-from datetime import datetime
-from getpass import getpass
-import pyttsx3
-import winsound
 import json
-from formatting import TextStyle
 import random
+from datetime import datetime
+import winsound
+
+import pyttsx3
+import pandas as pd
+import re
+
+from admin_commands import AdminCommands
+from formatting import TextStyle
+from utilities import Utility
 from wikipedia_search import WikipediaSearch
-import requests
-from bs4 import BeautifulSoup
 
 # try:
 #     import pyttsx3
@@ -27,18 +28,26 @@ from bs4 import BeautifulSoup
 
 class Chatbot:
     # Initializing assest
-    def __init__(self, config, wiki_search):
+    def __init__(self, config):
         self.config = config
-        self.log_file = open(self.config["log_file"], 'a')
+        
+        utility = Utility(self.config)
+        wikipedia_search = WikipediaSearch(self.config)
+        admin_commands = AdminCommands(self.config)
+        
+        self.log_action = utility.log_action
+        self.close_log_file = utility.close_log_file
+        self.wikipedia_search = wikipedia_search.wikipedia_search
+        self.handle_admin_command = admin_commands.handle_admin_command
+        self.admin_prefix = admin_commands.admin_prefix
+        self.intents = admin_commands.intents
+        
         self.log_action(f'Loaded Chatbot with configuration: {self.config}')
         self.load_assets()
-        self.wiki_search = wiki_search
 
     def load_assets(self):
         try:
             self.initialize_tts()
-            self.reload_responses()
-            self.load_admin_commands()
         except Exception as error:
             print(f"{TextStyle.fg['R']}Error during initialization: {error}{TextStyle.fg['x']}")
             self.log_action(f'Error during initialization: {error}')
@@ -46,59 +55,6 @@ class Chatbot:
 
         if self.config["system_sound"]:
             winsound.Beep(800, 800)
-
-    def log_action(self, action):
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log_message = f'[{timestamp}] {action}\n'
-        
-        self.log_file.write(log_message)
-        self.log_file.flush()
-    
-    def close_log_file(self):
-        self.log_file.close()
-
-    def reload_responses(self):
-        try:
-            with open(self.config["response_file"], "r") as intents_file:
-                intents_data = json.load(intents_file)
-                self.intents = intents_data.get("intents", [])
-            self.log_action(f'Successfully loaded Response file ({self.config["response_file"]})')
-        except FileNotFoundError:
-            print(f"{TextStyle.fg['R']}Error: Response file not found.{TextStyle.fg['x']}")
-            self.log_action(f'FileNotFoundError: Response file ({self.config["response_file"]})')
-            raise
-        except Exception as error:
-            print(f"{TextStyle.fg['R']}An error occurred while loading responses: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Failed to load Response file ({self.config["response_file"]})')
-            raise
-    
-    def load_admin_commands(self):
-        try:
-            commands_df = pd.read_csv(self.config["commands_file"], encoding="utf-8")
-
-            self.admin_commands = {}
-            for index, row in commands_df.iterrows():
-                command = row["command"]
-                function = row["function"]
-                arguments = row["arguments"]
-                if not pd.isna(arguments):
-                    arguments = [arg.strip() for arg in arguments.split(",") if arg.strip()]
-                else:
-                    arguments = []
-                self.admin_commands[command] = {"function": function, "arguments": arguments}
-            
-            self.admin_password = commands_df["password"].values[0]
-            self.admin_prefix = commands_df["prefix"].values[0]
-
-            self.log_action(f'Successfully loaded Commands file ({self.config["commands_file"]})')
-        except FileNotFoundError:
-            print(f"{TextStyle.fg['R']}Error: Commands file not found.{TextStyle.fg['x']}")
-            self.log_action(f'FileNotFoundError: Commands file ({self.config["commands_file"]})')
-            raise
-        except Exception as error:
-            print(f"{TextStyle.fg['R']}An error occurred while loading admin commands: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Failed to load Commands file ({self.config["commands_file"]})')
-            raise
     
     def initialize_tts(self):        
         try:
@@ -110,24 +66,6 @@ class Chatbot:
             print(f"{TextStyle.fg['R']}Error initializing TTS engine: {error}{TextStyle.fg['x']}")
             self.log_action(f'Failed to initialize TTS engine')
             self.tts_engine = None
-
-    # Reload assets while program is running
-    def reload_chatbot(self, reload_responses=True, reload_admin_commands=True):
-        try:
-            if reload_responses:
-                self.reload_responses()
-                print(f"{TextStyle.fg['G']}Responses reloaded successfully...{TextStyle.fg['x']}")
-
-            if reload_admin_commands:
-                self.load_admin_commands()
-                print(f"{TextStyle.fg['G']}Admin Commands reloaded successfully...{TextStyle.fg['x']}")
-
-            if self.config["system_sound"]:
-                winsound.Beep(1000, 500)
-                
-        except Exception as error:
-            print(f"{TextStyle.fg['R']}Error during Chatbot reload: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error during Chatbot reload: {error}')
 
     # NLP
     def preprocess_text(self, text):
@@ -177,53 +115,6 @@ class Chatbot:
             print(f"{TextStyle.fg['R']}Error updating unrecognized file: {error}{TextStyle.fg['x']}")
             self.log_action(f'Error updating unrecognized file: {error}')
 
-    def handle_admin_command(self, command):
-        try:
-            password = getpass(f"{TextStyle.fg['B']}Enter admin password: {TextStyle.fg['x']}")
-            if password == self.admin_password:
-                
-                if command in self.admin_commands:
-                    command_info = self.admin_commands[command]
-                    function_name = command_info["function"]
-                    arguments = command_info["arguments"]
-
-                    if hasattr(self, function_name) and callable(getattr(self, function_name)):
-                        function_to_execute = getattr(self, function_name)
-                        function_to_execute(*arguments)
-                    else:
-                        print(f"{TextStyle.fg['Y']}Invalid command: Function not found.{TextStyle.fg['x']}")
-                        self.log_action(f"Invalid command: Can't find instance of `{function_name}`")
-                else:
-                    print(f"{TextStyle.fg['Y']}Invalid command.{TextStyle.fg['x']}")
-                    self.log_action(f'Invalid command: {command}')
-            else:
-                print(f"{TextStyle.fg['Y']}Invalid password.{TextStyle.fg['x']}")
-                self.log_action(f'Invalid password.')
-        except Exception as error:
-            print(f"{TextStyle.fg['R']}Error handling admin command: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error handling admin command: {error}')
-
-    def clear_responses(self):
-        try:
-            self.clear_file(self.config["response_file"], ["response_id", "bot_response"], "Responses")
-        except:
-            raise
-
-    def clear_unrecognized(self):
-        try:
-            self.clear_file(self.config["unrecognized_file"], ["count", "time", "user_message"], "Unrecognized chat")
-        except:
-            raise
-
-    def clear_file(self, file_path, columns, name):
-        try:
-            pd.DataFrame(columns=columns).to_csv(file_path, mode="w", header=True, index=False)
-            print(f"{TextStyle.fg['G']}{name} cleared...{TextStyle.fg['x']}")
-            self.log_action(f'Cleared {name}')
-        except Exception as error:
-            print(f"{TextStyle.fg['R']}Error clearing {name.lower()}: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error clearing: {name.lower()}')
-
     def update_analize_data(self, id):
         try:
             df = pd.read_csv(self.config["analize_data_file"], encoding="utf-8")
@@ -245,6 +136,9 @@ class Chatbot:
     def generate_response(self, user_message):
         try:
             user_message = self.preprocess_text(user_message)
+
+            if not user_message:
+                return "Please enter a valid message."
 
             # Offile Response
             intent = self.match_pattern(user_message)
@@ -269,45 +163,6 @@ class Chatbot:
             self.log_action(f"Error generating response: {error}")
             return None
 
-    def wikipedia_search(self, user_message):
-        try:
-            # Extracting search query (after "What is")
-            search_query = user_message[7:].strip()
-
-            wikipedia_api_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&titles={search_query}&prop=extracts&exintro=1"
-
-            # Making HTTP request
-            headers = {"User-Agent": self.config["user_agent"]}
-            response = requests.get(wikipedia_api_url, headers=headers)
-            data = response.json()
-
-            # Extracting page content
-            pages = data.get("query", {}).get("pages", {})
-            page = next(iter(pages.values()), None)
-
-            if page and "extract" in page:
-                response_html = page["extract"]
-                soup = BeautifulSoup(response_html, 'html.parser')
-                
-                # Allow only specified tags, and convert them to strings
-                # allowed_tags = ['i', 'b', 'u']
-                # for tag in soup.find_all(True):
-                #     if tag.name not in allowed_tags:
-                #         tag.unwrap()
-                # cleaned_html = str(soup).strip()
-                
-                response_text = soup.select('p ~ p')[0].get_text().strip()
-            else:
-                response_text = "I couldn't find detailed information on that topic in Wikipedia."
-
-            self.log_action(f'Chatbot responded to `{user_message}` with Wikipedia search result `{response_text}`')
-            return response_text
-
-        except Exception as error:
-            print(f"{TextStyle.fg['R']}Error searching Wikipedia: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error searching Wikipedia: {error}')
-            return None
-
     def speak(self, text):
         try:
             if self.config["speak_response"]:
@@ -326,21 +181,8 @@ class Chatbot:
                 if user_message.lower() == "exit" or user_message.lower() == "quit":
                     print(f"{TextStyle.fg['Y']}Chat ended{TextStyle.fg['x']}")
                     self.log_action(f'Status change detected: stopped')
-                    chatbot.close_log_file()
+                    self.close_log_file()
                     break
-
-                # Handling reload commands
-                elif user_message.lower().startswith("reload"):
-                    command = user_message.lower().replace("reload", "").strip()
-                    if command == "all" or command == "":
-                        self.reload_chatbot(reload_responses=True, reload_admin_commands=True)
-                    elif command == "responses":
-                        self.reload_chatbot(reload_responses=True, reload_admin_commands=False)
-                    elif command == "admin commands":
-                        self.reload_chatbot(reload_responses=False, reload_admin_commands=True)
-                    else:
-                        print("Invalid reload command.")
-                    continue
 
                 # Handling admin commands
                 elif user_message.lower().startswith(self.admin_prefix):
@@ -363,10 +205,10 @@ if __name__ == "__main__":
         with open("config.json", "r") as config_file:
             config = json.load(config_file)
 
-        wiki_search = WikipediaSearch({"User-Agent": config["user_agent"]})
-        chatbot = Chatbot(config, wiki_search)
+        utility = Utility(config)
+        utility.log_action("Status change detected: running")
         
-        chatbot.log_action("Status change detected: running")
+        chatbot = Chatbot(config)
         chatbot.main()
     except FileNotFoundError:
         print(f"{TextStyle.fg['R']}Error: Config file not found.{TextStyle.fg['x']}")
