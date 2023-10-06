@@ -274,11 +274,10 @@ class Chatbot:
             # Extracting search query (after "What is")
             search_query = user_message[7:].strip()
 
-            custom_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
             wikipedia_api_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&titles={search_query}&prop=extracts&exintro=1"
 
             # Making HTTP request
-            headers = {"User-Agent": custom_user_agent}
+            headers = {"User-Agent": self.config["user_agent"]}
             response = requests.get(wikipedia_api_url, headers=headers)
             data = response.json()
 
