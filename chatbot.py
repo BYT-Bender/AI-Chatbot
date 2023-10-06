@@ -10,7 +10,6 @@ import json
 from formatting import TextStyle
 import random
 from wikipedia_search import WikipediaSearch
-import wikipediaapi
 import requests
 from bs4 import BeautifulSoup
 
