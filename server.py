@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from chatbot import Chatbot
 from flask import send_from_directory
-from intents_data import intents
+from wikipedia_search import WikipediaSearch
 import json
 
 app = Flask(__name__, static_url_path='', static_folder='assets')
@@ -9,7 +9,8 @@ app = Flask(__name__, static_url_path='', static_folder='assets')
 with open("config.json", "r") as config_file:
     config = json.load(config_file)
 
-chatbot = Chatbot(config)
+wiki_search = WikipediaSearch({"User-Agent": config["user_agent"]})
+chatbot = Chatbot(config, wiki_search)
 
 @app.route('/process', methods=['POST'])
 def process():
