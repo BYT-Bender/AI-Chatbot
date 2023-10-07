@@ -14,44 +14,16 @@ from formatting import TextStyle
 from utilities import Utility
 from wikipedia_search import WikipediaSearch
 
-# try:
-#     import pyttsx3
-#     print("module 'pyttsx3' is installed.")
-# except ModuleNotFoundError:
-#     print("module 'pyttsx3' is not installed.")
-
-# try:
-#     import winsound
-#     print("module 'winsound' is installed.")
-# except ModuleNotFoundError:
-#     print("module 'winsound' is not installed.")
-
 class Chatbot:
     # Initializing assest
     def __init__(self, config):
         self.config = config
         
-        utility = Utility(self.config)
-        wikipedia_search = WikipediaSearch(self.config)
-        admin_commands = AdminCommands(self.config)
+        self.utility = Utility(self.config)
+        self.wikipedia_search = WikipediaSearch(self.config)
+        self.admin_commands = AdminCommands(self.config)
         
-        self.log_action = utility.log_action
-        self.close_log_file = utility.close_log_file
-        self.wikipedia_search = wikipedia_search.wikipedia_search
-        self.handle_admin_command = admin_commands.handle_admin_command
-        self.admin_prefix = admin_commands.admin_prefix
-        self.intents = admin_commands.intents
-        
-        self.log_action(f'Loaded Chatbot with configuration: {self.config}')
-        self.load_assets()
-
-    def load_assets(self):
-        try:
-            self.initialize_tts()
-        except Exception as error:
-            print(f"{TextStyle.fg['R']}Error during initialization: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error during initialization: {error}')
-            exit(1)
+        self.initialize_tts()
 
         if self.config["system_sound"]:
             winsound.Beep(800, 800)
@@ -61,10 +33,9 @@ class Chatbot:
             self.tts_engine = pyttsx3.init()
             voices = self.tts_engine.getProperty('voices')
             self.tts_engine.setProperty('voice', voices[self.config["voice"]].id)
-            self.log_action(f'Successfully initialized TTS engine')
+            self.utility.handle_success("initialized", "TTS engine", voices[self.config["voice"]].id, show=False)
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error initializing TTS engine: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Failed to initialize TTS engine')
+            self.utility.handle_error("initializing TTS engine", error)
             self.tts_engine = None
 
     # NLP
@@ -76,21 +47,19 @@ class Chatbot:
             text = re.sub(r'[^\w\s]', '', text)  # Remove non-word and non-space characters
             return text
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error during text preprocessing: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error during text preprocessing: {error}')
+            self.utility.handle_error("text preprocessing", error)
             return text
 
     # Finding pattern (Not really)
     def match_pattern(self, user_message):
         try:
-            for intent in self.intents:
+            for intent in self.admin_commands.intents:
                 for pattern in intent["patterns"]:
                     if re.search(self.preprocess_text(pattern), user_message):
                         return intent
             return None
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error during pattern matching: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error during pattern matching: {error}')
+            self.utility.handle_error("pattern matching", error)
             return None
 
     def update_unrecognized_file(self, user_message):
@@ -112,8 +81,7 @@ class Chatbot:
                 df.at[index, "count"] += 1
                 df.to_csv(self.config["unrecognized_file"], mode="w", header=True, index=False)
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error updating unrecognized file: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error updating unrecognized file: {error}')
+            self.utility.handle_error("updating unrecognized file", error)
 
     def update_analize_data(self, id):
         try:
@@ -130,8 +98,7 @@ class Chatbot:
                 df.at[index, "count"] += 1
                 df.to_csv(self.config["analize_data_file"], mode="w", header=True, index=False)
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error updating analyzing data file: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error updating analyzing data file: {error}')
+            self.utility.handle_error("updating analyzing data file", error)
 
     def generate_response(self, user_message):
         try:
@@ -146,21 +113,20 @@ class Chatbot:
                 response_id = intent["id"]
                 response = random.choice(intent["responses"])
                 self.update_analize_data(response_id)
-                self.log_action(f'Chatbot responded to `{user_message}` with ({response_id}) `{response}`')
+                self.utility.log_action(f'Chatbot responded to `{user_message}` with ({response_id}) `{response}`')
                 return response
 
             # Searching wiki
             if user_message.startswith("what is"):
-                response_text = self.wikipedia_search(user_message)
+                response_text = self.wikipedia_search.wikipedia_search(user_message)
                 return response_text
 
             self.update_unrecognized_file(user_message)
-            self.log_action(f'Chatbot failed to respond to `{user_message}`')
+            self.utility.log_action(f'Chatbot failed to respond to `{user_message}`')
             return self.config["fallback_response"]
 
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error generating response: {error}{TextStyle.fg['x']}")
-            self.log_action(f"Error generating response: {error}")
+            self.utility.handle_error("generating response", error)
             return None
 
     def speak(self, text):
@@ -169,8 +135,7 @@ class Chatbot:
                 self.tts_engine.say(text)
                 self.tts_engine.runAndWait()
         except Exception as error:
-            print(f"{TextStyle.fg['R']}Error during text-to-speech: {error}{TextStyle.fg['x']}")
-            self.log_action(f'Error during text-to-speech: {error}')
+            self.utility.handle_error("text-to-speech", error)
 
     def main(self):
         print(f"{TextStyle.fg['G']}Welcome to the chatbot! Type 'exit' to end the conversation.{TextStyle.fg['x']}")
@@ -180,14 +145,14 @@ class Chatbot:
                 user_message = input(f'{self.config["user_name"]}: ')
                 if user_message.lower() == "exit" or user_message.lower() == "quit":
                     print(f"{TextStyle.fg['Y']}Chat ended{TextStyle.fg['x']}")
-                    self.log_action(f'Status change detected: stopped')
-                    self.close_log_file()
+                    self.utility.log_action(f'Status change detected: stopped')
+                    self.utility.close_log_file()
                     break
 
                 # Handling admin commands
-                elif user_message.lower().startswith(self.admin_prefix):
-                    command = user_message.lower().replace(self.admin_prefix, "").strip()
-                    self.handle_admin_command(command)
+                elif user_message.lower().startswith(self.admin_commands.admin_prefix):
+                    command = user_message.lower().replace(self.admin_commands.admin_prefix, "").strip()
+                    self.admin_commands.handle_admin_command(command)
                     continue
 
                 bot_reply = self.generate_response(user_message)
@@ -195,7 +160,7 @@ class Chatbot:
                 self.speak(bot_reply)
 
         except Exception as error:
-            print(f"{TextStyle.fg['R']}An error occurred: {error}{TextStyle.fg['x']}")
+            self.utility.handle_error("main() loop", error)
         finally:
             if self.tts_engine is not None:
                 self.tts_engine.stop()
@@ -207,10 +172,11 @@ if __name__ == "__main__":
 
         utility = Utility(config)
         utility.log_action("Status change detected: running")
-        
+        utility.log_action(f"Loaded Chatbot with configuration: {config}")
+
         chatbot = Chatbot(config)
         chatbot.main()
     except FileNotFoundError:
-        print(f"{TextStyle.fg['R']}Error: Config file not found.{TextStyle.fg['x']}")
+        utility.handle_file_not_found_error("Config", config_file)
     except Exception as error:
-        print(f"{TextStyle.fg['R']}An error occurred: {error}{TextStyle.fg['x']}")
+        utility.handle_error("booting", error)
