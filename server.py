@@ -1,16 +1,16 @@
-from flask import Flask, request, jsonify
-from chatbot import Chatbot
-from flask import send_from_directory
-from wikipedia_search import WikipediaSearch
 import json
+
+from flask import Flask, request, jsonify
+from flask import send_from_directory
+
+from chatbot import Chatbot
 
 app = Flask(__name__, static_url_path='', static_folder='assets')
 
 with open("config.json", "r") as config_file:
     config = json.load(config_file)
 
-wiki_search = WikipediaSearch({"User-Agent": config["user_agent"]})
-chatbot = Chatbot(config, wiki_search)
+chatbot = Chatbot(config)
 
 @app.route('/process', methods=['POST'])
 def process():
