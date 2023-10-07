@@ -384,7 +384,8 @@
             "tag": "no",
             "patterns": [
                 "no",
-                "nope"
+                "nope",
+                "nothing"
             ],
             "responses": [
                 "That's perfectly fine! If you ever have any questions or need assistance in the future, don't hesitate to reach out. I'm here to help whenever you need it. Have a great day!"
