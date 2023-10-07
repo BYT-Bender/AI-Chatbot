@@ -1,3 +1,5 @@
+# Copyright © 2023 BYT-Bender
+
 class TextStyle:
     fg = {
         'k': '\033[30m', # Black
