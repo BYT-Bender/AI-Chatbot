@@ -1,3 +1,0 @@
-prefix,command,function,arguments,password
-sudo,clear responses,clear_responses,,admin123
-sudo,clear unrecognized,clear_unrecognized,,admin123
