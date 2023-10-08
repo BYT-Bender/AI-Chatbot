@@ -13,6 +13,7 @@ from admin_commands import AdminCommands
 from formatting import TextStyle
 from utilities import Utility
 from wikipedia_search import WikipediaSearch
+from dataset.elements.response import SearchElement
 
 class Chatbot:
     # Initializing assest
@@ -22,6 +23,7 @@ class Chatbot:
         self.utility = Utility(self.config)
         self.wikipedia_search = WikipediaSearch(self.config)
         self.admin_commands = AdminCommands(self.config)
+        self.search_element = SearchElement()
         
         self.initialize_tts()
 
@@ -115,6 +117,11 @@ class Chatbot:
                 self.update_analize_data(response_id)
                 self.utility.log_action(f'Chatbot responded to `{user_message}` with ({response_id}) `{response}`')
                 return response
+
+            # Element Search
+            element_search = self.search_element.generate_response(user_message)
+            if element_search:
+                return element_search
 
             # Searching wiki
             if user_message.startswith("what is"):
