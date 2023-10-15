@@ -67,6 +67,6 @@ class SearchElement:
                     response = self.get_responses(property_tag, element, property_value)
                     if response:
                         self.utility.log_action(f'Chatbot responded to `{user_message}` with offline dataset search result `{response}`')
-                        return response
+                        return response, "element"
 
-        return None
+        return None, None
