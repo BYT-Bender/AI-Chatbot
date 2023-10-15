@@ -1,19 +1,19 @@
 # Copyright © 2023 BYT-Bender
 
 import json
-import random
 from datetime import datetime
 import winsound
 
 import pyttsx3
 import pandas as pd
-import re
+import signal
 
-from admin_commands import AdminCommands
-from formatting import TextStyle
-from utilities import Utility
-from wikipedia_search import WikipediaSearch
-from dataset.elements.response import SearchElement
+from assets.utilities import Utility
+from assets.formatting import TextStyle
+from assets.admin_commands import AdminCommands
+from assets.responses.conversation.search_conversation import SearchConversation
+from assets.responses.elements.search_element import SearchElement
+from assets.responses.wikipedia.search_wikipedia import SearchWikipedia
 
 class Chatbot:
     # Initializing assest
@@ -21,15 +21,18 @@ class Chatbot:
         self.config = config
         
         self.utility = Utility(self.config)
-        self.wikipedia_search = WikipediaSearch(self.config)
+        self.wikipedia_search = SearchWikipedia(self.config)
+        self.conversation_search = SearchConversation(self.config)
         self.admin_commands = AdminCommands(self.config)
-        self.search_element = SearchElement()
+        self.search_element = SearchElement(self.config)
         
         self.initialize_tts()
 
         if self.config["system_sound"]:
             winsound.Beep(800, 800)
-    
+
+        signal.signal(signal.SIGINT, self.utility.handle_keyboard_interrupt)    
+
     def initialize_tts(self):        
         try:
             self.tts_engine = pyttsx3.init()
@@ -39,30 +42,6 @@ class Chatbot:
         except Exception as error:
             self.utility.handle_error("initializing TTS engine", error)
             self.tts_engine = None
-
-    # NLP
-    def preprocess_text(self, text):
-        try:
-            text = text.lower()
-            text = text.strip()  # Remove leading and trailing white spaces
-            text = re.sub(r'\s+', ' ', text)  # Multiple white spaces => single space
-            text = re.sub(r'[^\w\s]', '', text)  # Remove non-word and non-space characters
-            return text
-        except Exception as error:
-            self.utility.handle_error("text preprocessing", error)
-            return text
-
-    # Finding pattern (Not really)
-    def match_pattern(self, user_message):
-        try:
-            for intent in self.admin_commands.intents:
-                for pattern in intent["patterns"]:
-                    if re.search(self.preprocess_text(pattern), user_message):
-                        return intent
-            return None
-        except Exception as error:
-            self.utility.handle_error("pattern matching", error)
-            return None
 
     def update_unrecognized_file(self, user_message):
         try:
@@ -85,48 +64,23 @@ class Chatbot:
         except Exception as error:
             self.utility.handle_error("updating unrecognized file", error)
 
-    def update_analize_data(self, id):
-        try:
-            df = pd.read_csv(self.config["analize_data_file"], encoding="utf-8")
-            existing_entry = df[df["id"] == id]
-            if existing_entry.empty:
-                new_entry = pd.DataFrame({
-                    "id": [id],
-                    "count": [1]
-                })
-                new_entry.to_csv(self.config["analize_data_file"], mode="a", header=False, index=False)
-            else:
-                index = existing_entry.index[0]
-                df.at[index, "count"] += 1
-                df.to_csv(self.config["analize_data_file"], mode="w", header=True, index=False)
-        except Exception as error:
-            self.utility.handle_error("updating analyzing data file", error)
-
     def generate_response(self, user_message):
         try:
-            user_message = self.preprocess_text(user_message)
+            user_message = self.utility.preprocess_text(user_message)
 
             if not user_message:
                 return "Please enter a valid message."
+            
+            response_generators = [
+                self.conversation_search, # Offile Response
+                self.search_element, # Element Search
+                self.wikipedia_search # Searching wiki
+            ]
 
-            # Offile Response
-            intent = self.match_pattern(user_message)
-            if intent and "responses" in intent:
-                response_id = intent["id"]
-                response = random.choice(intent["responses"])
-                self.update_analize_data(response_id)
-                self.utility.log_action(f'Chatbot responded to `{user_message}` with ({response_id}) `{response}`')
-                return response
-
-            # Element Search
-            element_search = self.search_element.generate_response(user_message)
-            if element_search:
-                return element_search
-
-            # Searching wiki
-            if user_message.startswith("what is"):
-                response_text = self.wikipedia_search.wikipedia_search(user_message)
-                return response_text
+            for generator in response_generators:
+                response = generator.generate_response(user_message)
+                if response:
+                    return response
 
             self.update_unrecognized_file(user_message)
             self.utility.log_action(f'Chatbot failed to respond to `{user_message}`')
@@ -145,19 +99,14 @@ class Chatbot:
             self.utility.handle_error("text-to-speech", error)
 
     def main(self):
-        print(f"{TextStyle.fg['G']}Welcome to the chatbot! Type 'exit' to end the conversation.{TextStyle.fg['x']}")
+        print(f"{TextStyle.fg['G']}Welcome to the chatbot! Type 'Ctrl + C' to end the conversation.{TextStyle.fg['x']}")
 
         try:
             while True:
                 user_message = input(f'{self.config["user_name"]}: ')
-                if user_message.lower() == "exit" or user_message.lower() == "quit":
-                    print(f"{TextStyle.fg['Y']}Chat ended{TextStyle.fg['x']}")
-                    self.utility.log_action(f'Status change detected: stopped')
-                    self.utility.close_log_file()
-                    break
 
                 # Handling admin commands
-                elif user_message.lower().startswith(self.admin_commands.admin_prefix):
+                if user_message.lower().startswith(self.admin_commands.admin_prefix):
                     command = user_message.lower().replace(self.admin_commands.admin_prefix, "").strip()
                     self.admin_commands.handle_admin_command(command)
                     continue
@@ -172,10 +121,19 @@ class Chatbot:
             if self.tts_engine is not None:
                 self.tts_engine.stop()
 
+def load_config(config_file):
+    try:
+        with open(config_file, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        raise Exception(f"Config file '{config_file}' not found.")
+    except Exception as error:
+        raise Exception(f"Error loading configuration: {error}")
+
 if __name__ == "__main__":
     try:
-        with open("config.json", "r") as config_file:
-            config = json.load(config_file)
+        config_file = "config.json"
+        config = load_config(config_file)
 
         utility = Utility(config)
         utility.log_action("Status change detected: running")
@@ -183,6 +141,7 @@ if __name__ == "__main__":
 
         chatbot = Chatbot(config)
         chatbot.main()
+
     except FileNotFoundError:
         utility.handle_file_not_found_error("Config", config_file)
     except Exception as error:
