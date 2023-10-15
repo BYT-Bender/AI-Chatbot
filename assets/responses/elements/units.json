@@ -1,0 +1,9 @@
+{
+    "atomic_mass": "amu",
+    "density": "g/cm³",
+    "boiling_point": "K",
+    "melting_point": "K",
+    "atomic_radius": "μ",
+    "ionization_energy": "kJ/mol",
+    "abundance_crust": "mg/kg"
+}
