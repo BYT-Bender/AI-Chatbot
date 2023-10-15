@@ -54,14 +54,37 @@ def plot_exit_command_usage():
 
     plt.pie(exit_commands_df["count"], labels = exit_commands.keys(), autopct='%1.2f%%', pctdistance=0.80, explode=[0.02, 0.02, 0.02])
     # plt.title("Exit Command Usage")
+    # plt.legend()
 
     hole = plt.Circle((0, 0), 0.65, facecolor='#0c1c23')
     ax.add_artist(hole)
+
+def plot_response_usage():
+    ax = plt.subplot(2, 2, 4)
+    response_df = pd.read_csv("assets/data/response_usage.csv")
+    response_types = ['conversation', 'element', 'wikipedia']
+
+    grouped_data = response_df.groupby(["date", "response_type"])["count"].sum().unstack(fill_value=0)
+
+    x = grouped_data.index
+    y_total = grouped_data.sum(axis=1)
+
+    plt.plot(x, y_total, label="Total", marker = '.', markersize = 8)
+
+    for response_type in response_types:
+        y = grouped_data[response_type].values
+        plt.plot(x, y, label=response_type.capitalize(), linestyle = '--')
+        
+    plt.xlabel("Date")
+    plt.ylabel("Count")
+    plt.legend()
+    # plt.title("Response Usage")
 
 
 plot_conversation_usage()
 plot_command_usage()
 plot_exit_command_usage()
+plot_response_usage()
 
 # plt.tight_layout()
 plt.show()
