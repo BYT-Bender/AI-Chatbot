@@ -79,6 +79,30 @@ class Utility:
                 df.to_csv(file, mode="w", header=True, index=False)
         except Exception as error:
             self.handle_error(error_msg, error)
+
+    def update_time_usage(self, file, response_type, error_msg):
+        try:
+            df = pd.read_csv(file, encoding="utf-8")
+
+            today_date = datetime.now().strftime('%Y-%m-%d')
+            existing_entry = df[(df['date'] == today_date) & (df['response_type'] == response_type)]
+
+            if existing_entry.empty:
+                new_entry = pd.DataFrame({
+                    "date": [today_date],
+                    "response_type": [response_type],
+                    "count": [1]
+                })
+                df = pd.concat([df, new_entry])
+                # df = df.append(new_entry, ignore_index=True)
+            else:
+                index = existing_entry.index[0]
+                df.at[index, "count"] += 1
+
+            df.to_csv(file, mode="w", header=True, index=False)
+
+        except Exception as error:
+            self.handle_error(error_msg, error)
         
     def preprocess_text(self, text):
         try:
