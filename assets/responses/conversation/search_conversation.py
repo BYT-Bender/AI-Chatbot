@@ -31,8 +31,8 @@ class SearchConversation:
             response_id = intent["id"]
             response = random.choice(intent["responses"])
             self.utility.log_action(f'Chatbot responded to `{user_message}` with ({response_id}) `{response}`')
-            self.utility.update_usage(self.config["response_usage"], response_id, "updating response usage data")
-            return response
+            self.utility.update_usage(self.config["conversation_response_usage"], response_id, "updating response usage data")
+            return response, "conversation"
         else:
-            return None
+            return None, None
         
