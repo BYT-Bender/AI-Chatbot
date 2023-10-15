@@ -68,6 +68,6 @@ class SearchWikipedia:
     def generate_response(self, user_message):
         if user_message.startswith("what is") and self.is_internet_available():
             response = self.wikipedia_search(user_message)
-            return response
+            return response, "wikipedia"
         else:
-            return None
+            return None, None
