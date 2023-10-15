@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Response by ID
-response_df = pd.read_csv("data/response_usage.csv")
+response_df = pd.read_csv("assets/data/response_usage.csv")
 
 plt.bar(response_df["id"], response_df["count"], color='b')
 plt.xticks(response_df["id"])
@@ -14,7 +14,7 @@ plt.show()
 
 
 # Command Usage by ID
-command_df = pd.read_csv("data/command_usage.csv")
+command_df = pd.read_csv("assets/data/command_usage.csv")
 
 plt.bar(command_df["id"], command_df["count"], color='b')
 plt.xticks(command_df["id"])
