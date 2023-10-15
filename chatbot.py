@@ -3,10 +3,10 @@
 import json
 from datetime import datetime
 import winsound
+import signal
 
 import pyttsx3
 import pandas as pd
-import signal
 
 from assets.utilities import Utility
 from assets.formatting import TextStyle
@@ -55,12 +55,13 @@ class Chatbot:
                     "time": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
                     "user_message": [user_message]
                 })
-                new_entry.to_csv(self.config["unrecognized_file"], mode="a", header=False, index=False)
+                # new_entry.to_csv(self.config["unrecognized_file"], mode="a", header=False, index=False)
+                df = pd.concat([df, new_entry])
             else:
                 # Updating count for the existing unrecognized message
                 index = existing_message.index[0]
                 df.at[index, "count"] += 1
-                df.to_csv(self.config["unrecognized_file"], mode="w", header=True, index=False)
+            df.to_csv(self.config["unrecognized_file"], mode="w", header=True, index=False)
         except Exception as error:
             self.utility.handle_error("updating unrecognized file", error)
 
@@ -78,8 +79,9 @@ class Chatbot:
             ]
 
             for generator in response_generators:
-                response = generator.generate_response(user_message)
+                response, response_type = generator.generate_response(user_message)
                 if response:
+                    self.utility.update_time_usage(self.config["response_usage"], response_type, "updating response usage data")
                     return response
 
             self.update_unrecognized_file(user_message)
