@@ -1,13 +1,12 @@
 # Copyright © 2023 BYT-Bender
 
 import tkinter as tk
-# import tkinter.messagebox
 import customtkinter
 
 import json
 
 from chatbot import Chatbot
-from admin_commands import AdminCommands
+from assets.admin_commands import AdminCommands
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -17,7 +16,7 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        # Create an instance of your chatbot class
+        # Create an instance of the chatbot class
         with open("config.json", "r") as config_file:
             config = json.load(config_file)
 
@@ -75,12 +74,6 @@ class App(customtkinter.CTk):
         # self.textbox.insert("0.0", "CTkTextbox")
         self.entry.bind('<Return>', self.send_message)
 
-
-
-    # def open_input_dialog_event(self):
-    #     dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
-    #     print("CTkInputDialog:", dialog.get_input())
-
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
@@ -91,20 +84,12 @@ class App(customtkinter.CTk):
     def sidebar_button_event(self):
         print("sidebar_button click")
 
-
     def send_message(self, event=None):
         user_message = self.entry.get()
         if user_message:
-            # Display the user's message in the chatbox
             self.display_message("You: " + user_message)
-
-            # Get the chatbot's response
             bot_response = self.chatbot.generate_response(user_message)
-
-            # Display the chatbot's response in the chatbox
             self.display_message("Chatbot: " + bot_response + "\n")
-
-            # Clear the user input field
             self.entry.delete(0, tk.END)
 
     def display_message(self, message):
