@@ -1,16 +1,17 @@
 # Copyright © 2023 BYT-Bender
 
 import tkinter as tk
+# import tkinter.messagebox
 import customtkinter
 
 import json
 
 from chatbot import Chatbot
 from assets.admin_commands import AdminCommands
+from analize import Graph
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
-
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -22,6 +23,7 @@ class App(customtkinter.CTk):
 
         self.chatbot = Chatbot(config)
         self.admin_commands = AdminCommands(config)
+        self.graph = Graph(config)
 
         # configure window
         self.title("Chatbot")
@@ -40,7 +42,7 @@ class App(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Reload", command=self.admin_commands.load_responses)
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
-        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Command", command=self.sidebar_button_event)
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Analize", command=self.graph.main)
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Command", command=self.sidebar_button_event)
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
@@ -74,6 +76,10 @@ class App(customtkinter.CTk):
         # self.textbox.insert("0.0", "CTkTextbox")
         self.entry.bind('<Return>', self.send_message)
 
+    # def open_input_dialog_event(self):
+    #     dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
+    #     print("CTkInputDialog:", dialog.get_input())
+
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
@@ -87,9 +93,16 @@ class App(customtkinter.CTk):
     def send_message(self, event=None):
         user_message = self.entry.get()
         if user_message:
+            # Display the user's message in the chatbox
             self.display_message("You: " + user_message)
+
+            # Get the chatbot's response
             bot_response = self.chatbot.generate_response(user_message)
+
+            # Display the chatbot's response in the chatbox
             self.display_message("Chatbot: " + bot_response + "\n")
+
+            # Clear the user input field
             self.entry.delete(0, tk.END)
 
     def display_message(self, message):
