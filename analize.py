@@ -1,90 +1,126 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from qbstyles import mpl_style
+import json
 
-mpl_style(dark=True)
+class Graph:
+    def __init__(self, config):
+        self.config = config
+        if self.config["graph_data"]["theme"].lower() == "dark":
+            mpl_style(dark=True)
+            self.facecolor = "#0c1c23"
+        elif self.config["graph_data"]["theme"].lower() == "light":
+            mpl_style(dark=False)
+            self.facecolor = "#ffffff"
 
-# Conversation Response by ID
-def plot_conversation_usage():
-    ax = plt.subplot(2, 2, 1)
-    conversation_df = pd.read_csv("assets/data/conversation_response_usage.csv")
+    # Conversation Response by ID
+    def plot_conversation_usage(self, position, show_title=True, show_label=True):
+        ax = plt.subplot(2, 2, position)
+        conversation_df = pd.read_csv(self.config["conversation_response_usage"])
 
-    plt.bar(conversation_df["id"], conversation_df["count"], color='b')
-    plt.xticks(conversation_df["id"])
-    plt.xlabel("Response ID")
-    plt.ylabel("Response Count")
-    # plt.title("Response Distribution by ID") 
+        plt.bar(conversation_df["id"], conversation_df["count"], color='b')
+        plt.xticks(conversation_df["id"])
 
-    ax.set_axisbelow(True)
-    plt.grid(axis="x")
+        if show_label:
+            plt.xlabel("Response ID")
+            plt.ylabel("Response Count")
+        if show_title:
+            plt.title("Response Distribution by ID") 
 
-    for i, count in enumerate(conversation_df["count"]):
-        plt.text(conversation_df["id"][i], count, str(count), ha='center', va='bottom')
+        ax.set_axisbelow(True)
+        plt.grid(axis="x")
 
-# Command Usage by ID
-def plot_command_usage():
-    ax = plt.subplot(2, 2, 3)
+        for i, count in enumerate(conversation_df["count"]):
+            plt.text(conversation_df["id"][i], count, str(count), ha='center', va='bottom')
 
-    command_df = pd.read_csv("assets/data/command_usage.csv")
+    # Command Usage by ID
+    def plot_command_usage(self, position, show_title=True, show_label=True):
+        ax = plt.subplot(2, 2, position)
 
-    plt.bar(command_df["id"], command_df["count"], color='b')
-    plt.xticks(command_df["id"])
-    plt.xlabel("Command ID")
-    plt.ylabel("Command Count")
-    # plt.title("Command Distribution by ID")
+        command_df = pd.read_csv(self.config["command_usage"])
 
-    ax.set_axisbelow(True)
-    plt.grid(axis="x")
+        plt.bar(command_df["id"], command_df["count"], color='b')
+        plt.xticks(command_df["id"])
 
-    for i, count in enumerate(command_df["count"]):
-        plt.text(command_df["id"][i], count, str(count), ha='center', va='bottom')
+        if show_label:
+            plt.xlabel("Command ID")
+            plt.ylabel("Command Count")
+        if show_title:
+            plt.title("Command Distribution by ID")
 
-# Exit Command Usage
-def plot_exit_command_usage():
-    ax = plt.subplot(2, 2, 2)
-    command_df = pd.read_csv("assets/data/command_usage.csv")
+        ax.set_axisbelow(True)
+        plt.grid(axis="x")
 
-    exit_commands = {
-        "exit()": 1,
-        "quit()": 2,
-        "Ctrl + C": 3
-    }
+        for i, count in enumerate(command_df["count"]):
+            plt.text(command_df["id"][i], count, str(count), ha='center', va='bottom')
 
-    exit_commands_df = command_df.loc[command_df['id'].isin(exit_commands.values())]
-
-    plt.pie(exit_commands_df["count"], labels = exit_commands.keys(), autopct='%1.2f%%', pctdistance=0.80, explode=[0.02, 0.02, 0.02])
-    # plt.title("Exit Command Usage")
-    # plt.legend()
-
-    hole = plt.Circle((0, 0), 0.65, facecolor='#0c1c23')
-    ax.add_artist(hole)
-
-def plot_response_usage():
-    ax = plt.subplot(2, 2, 4)
-    response_df = pd.read_csv("assets/data/response_usage.csv")
-    response_types = ['conversation', 'element', 'wikipedia']
-
-    grouped_data = response_df.groupby(["date", "response_type"])["count"].sum().unstack(fill_value=0)
-
-    x = grouped_data.index
-    y_total = grouped_data.sum(axis=1)
-
-    plt.plot(x, y_total, label="Total", marker = '.', markersize = 8)
-
-    for response_type in response_types:
-        y = grouped_data[response_type].values
-        plt.plot(x, y, label=response_type.capitalize(), linestyle = '--')
+    # Exit Command Usage
+    def plot_exit_command_usage(self, position, show_title=True, show_label=True):
+        ax = plt.subplot(2, 2, position)
+        command_df = pd.read_csv(self.config["command_usage"])
         
-    plt.xlabel("Date")
-    plt.ylabel("Count")
-    plt.legend()
-    # plt.title("Response Usage")
+        exit_commands_df = command_df.loc[command_df['id'].isin(self.config["graph_data"]["exit_commands"].values())]
+
+        if show_label:
+            label = self.config["graph_data"]["exit_commands"].keys()
+        else:
+            label = None
+
+        plt.pie(exit_commands_df["count"], labels = label, autopct='%1.2f%%', pctdistance=0.80, explode=[0.02, 0.02, 0.02])
+        
+        if show_title:
+            plt.title("Exit Command Usage")
+
+        hole = plt.Circle((0, 0), 0.65, facecolor=self.facecolor)
+        ax.add_artist(hole)
+
+    def plot_response_usage(self, position, show_title=True, show_label=True):
+        ax = plt.subplot(2, 2, position)
+        response_df = pd.read_csv(self.config["response_usage"])
+
+        grouped_data = response_df.groupby(["date", "response_type"])["count"].sum().unstack(fill_value=0)
+
+        x = grouped_data.index
+        y_total = grouped_data.sum(axis=1)
+
+        plt.plot(x, y_total, label="Total", marker = '.', markersize = 8)
+
+        for response_type in self.config["graph_data"]["response_types"]:
+            y = grouped_data[response_type].values
+            plt.plot(x, y, label=response_type.capitalize(), linestyle = '--')
+            
+        if show_label:
+            plt.xlabel("Date")
+            plt.ylabel("Count")
+
+        if show_title:
+            plt.title("Response Usage")
+
+        plt.legend()
 
 
-plot_conversation_usage()
-plot_command_usage()
-plot_exit_command_usage()
-plot_response_usage()
+    def main(self):
+        self.plot_conversation_usage(1, show_title=False, show_label=True)
+        self.plot_command_usage(3, show_title=False, show_label=True)
+        self.plot_exit_command_usage(2, show_title=False, show_label=True)
+        self.plot_response_usage(4, show_title=False, show_label=True)
 
-# plt.tight_layout()
-plt.show()
+        # plt.tight_layout()
+        plt.show()
+    
+
+# def load_config(config_file):
+#     try:
+#         with open(config_file, "r") as file:
+#             return json.load(file)
+#     except FileNotFoundError:
+#         raise Exception(f"Config file '{config_file}' not found.")
+#     except Exception as error:
+#         raise Exception(f"Error loading configuration: {error}")
+    
+# if __name__ == "__main__":
+#     config_file = "config.json"
+#     config = load_config(config_file)
+    
+#     graph = Graph(config)
+#     graph.main()
