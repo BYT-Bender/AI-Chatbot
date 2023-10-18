@@ -16,5 +16,14 @@
     "element_intents": "assets/responses/elements/intents.json",
     "log_file": "log.txt",
     "admin_prefix": "sudo",
-    "fallback_response": "I'm sorry, I don't understand. Can you please rephrase your question or provide more details?"
+    "fallback_response": "I'm sorry, I don't understand. Can you please rephrase your question or provide more details?",
+    "graph_data": {
+        "theme": "dark",
+        "exit_commands": {
+            "exit()": 1,
+            "quit()": 2,
+            "Ctrl + C": 3
+        },
+        "response_types": ["conversation", "element", "wikipedia"]
+    }
 }
