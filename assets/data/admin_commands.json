@@ -1,0 +1,94 @@
+[
+    {
+        "id": 1,
+        "command": "quit",
+        "function": "exit",
+        "arguments": {},
+        "password": null
+    },
+    {
+        "id": 2,
+        "command": "exit",
+        "function": "exit",
+        "arguments": {},
+        "password": null
+    },
+    {
+        "id": 3,
+        "command": "ctrl + c",
+        "function": "exit",
+        "arguments": {},
+        "password": null
+    },
+    {
+        "id": 4,
+        "command": "reload all",
+        "function": "reload_chatbot",
+        "arguments": {
+            "all": true
+        },
+        "password": null
+    },
+    {
+        "id": 5,
+        "command": "reload conversation_responses",
+        "function": "reload_chatbot",
+        "arguments": {
+            "reload_conversation_responses": true
+        },
+        "password": null
+    },
+    {
+        "id": 6,
+        "command": "reload admin commands",
+        "function": "reload_chatbot",
+        "arguments": {
+            "reload_admin_commands": true
+        },
+        "password": null
+    },
+    {
+        "id": 7,
+        "command": "clear command_usage",
+        "function": "clear_command_usage",
+        "arguments": {},
+        "password": "123"
+    },
+    {
+        "id": 8,
+        "command": "clear conversation_response_usage",
+        "function": "clear_conversation_response_usage",
+        "arguments": {},
+        "password": "123"
+    },
+    {
+        "id": 9,
+        "command": "clear response_usage",
+        "function": "clear_response_usage",
+        "arguments": {},
+        "password": "123"
+    },
+    {
+        "id": 10,
+        "command": "clear unrecognized",
+        "function": "clear_unrecognized",
+        "arguments": {},
+        "password": "123"
+    },
+    {
+        "id": 11,
+        "command": "analize",
+        "function": "analize",
+        "arguments": {},
+        "password": null
+    },
+    {
+        "id": 12,
+        "command": "reload element_responses",
+        "function": "reload_chatbot",
+        "arguments": {
+            "reload_element_responses": true
+        },
+        "password": null
+    }
+]

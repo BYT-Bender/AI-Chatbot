@@ -1,0 +1,76 @@
+D:.
+│   chatbot.py
+│   config.json
+│   gui.py
+│   index.html
+│   requirements.txt
+│   server.py
+│
+├───assets
+│   │   admin_commands.py
+│   │   analize.py
+│   │   formatting.py
+│   │   utilities.py
+│   │
+│   ├───data
+│   │       admin_commands.json
+│   │       command_usage.csv
+│   │       conversation_response_usage.csv
+│   │       response_usage.csv
+│   │       unrecognized.csv
+│   │
+│   ├───responses
+│   │   ├───calculation
+│   │   │      solve_expression.py
+│   │   │
+│   │   ├───conversation
+│   │   │      intents.json
+│   │   │      search_conversation.py
+│   │   │
+│   │   ├───dictionary
+│   │   │      dictionary.json
+│   │   │      word_definition.py
+│   │   │
+│   │   ├───elements
+│   │   │      elements.json
+│   │   │      intents.json
+│   │   │      search_element.py
+│   │   │      units.json
+│   │   │
+│   │   └───wikipedia
+│   │          search_wikipedia.py
+│   │
+│   ├───server
+│          mark_pp.avif
+│          stella_pp.webp
+│          style.css
+│
+├───dataset
+│   ├───elements
+│   │   └───__pycache__
+│   │           response.cpython-311.pyc
+│   │
+│   └───paradoxes
+│           paradoxes.json
+│
+├───discord
+│       .env
+│       bot.py
+│
+├───documentation
+│       Chatbot.md
+│       TextStyle.md
+│
+├───log
+│       log_app.txt
+│       log_CL.txt
+│       log_discord.txt
+│       log_web.txt
+│       error.log
+│
+└───test
+   │   log.md
+   │
+   └───gui
+           chatbot_gui.py
+           chatbot_modern_gui.py

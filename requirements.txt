@@ -1,0 +1,12 @@
+json
+datetime
+winsound
+pyttsx3
+pandas
+signal
+matplotlib
+customtkinter
+tkinter
+flask
+requests
+beautifulsoup4

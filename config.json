@@ -1,0 +1,44 @@
+{
+    "bot_name": "Chatbot",
+    "user_name": "You",
+    "fallback_response": "I'm sorry, I don't understand. Can you please rephrase your question or provide more details?",
+    "speak_response": false,
+    "system_sound": false,
+    "voice": 1,
+    "admin_prefix": "sudo",
+    "parent_directory": "D:/Files/Python/AI/CURRENT_VER/",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
+    "log_files": {
+        "CL": "log/log_CL.txt",
+        "app": "log/log_app.txt",
+        "web": "log/log_web.txt",
+        "discord": "log/log_discord.txt"
+    },
+    "data": {
+        "element": {
+            "data": "assets/responses/elements/elements.json",
+            "intents": "assets/responses/elements/intents.json"
+        },
+        "command": {
+            "data": "assets/data/admin_commands.json",
+            "usage": "assets/data/command_usage.csv"
+        },
+        "conversation": {
+            "data": "assets/responses/conversation/intents.json",
+            "usage": "assets/data/conversation_response_usage.csv"
+        },
+        "common": {
+            "unrecognized_file": "assets/data/unrecognized.csv",
+            "response_usage": "assets/data/response_usage.csv"
+        }
+    },
+    "graph_data": {
+        "theme": "dark",
+        "exit_commands": {
+            "exit()": 1,
+            "quit()": 2,
+            "Ctrl + C": 3
+        },
+        "response_types": ["conversation", "element", "wikipedia", "calculation"]
+    }
+}
