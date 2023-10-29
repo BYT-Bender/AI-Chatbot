@@ -30,13 +30,13 @@ STELLA is an AI Chatbot that provides various functionalities through a Discord 
  
 1. Clone the repository:
 
-```
+```Shell
 git clone https://github.com/BYT-Bender/AI-Chatbot.git
 ```
 
 2. Set up the Python environment:
 
-```
+```Shell
 cd chatbot
 pip install -r requirements.txt
 ```
@@ -49,7 +49,7 @@ pip install -r requirements.txt
  
 1. Start the Discord bot:
 
-```
+```Shell
 python bot.py
 ```
 
@@ -59,7 +59,7 @@ python bot.py
  
 1. Start the web interface:
 
-```
+```Shell
 cd web
 python app.py
 ```
