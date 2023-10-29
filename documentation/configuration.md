@@ -1,4 +1,4 @@
- # STELLA Bot Configuration Guide
+ # STELLA - Configuration Guide
 
 STELLA is an AI Chatbot that you can configure to perform various tasks. This guide will walk you through the steps to configure the STELLA bot for your specific needs. Make sure you have already installed the bot as described in the [Installation section]() of the main documentation.
 
