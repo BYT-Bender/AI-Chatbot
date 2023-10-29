@@ -20,11 +20,11 @@ STELLA is an AI Chatbot that provides various functionalities through a Discord 
 
  ## Project Structure
 
- - **chatbot/**: Contains the Python code for the AI chatbot.
- - **assets/**: Stores essential data files and assets.
- - **discord/**: Holds the Discord bot code and configuration.
- - **web/:** Contains the web interface code and assets.
- - **log/:** Contains log files for error and application logs.
+ - `chatbot/`: Contains the Python code for the AI chatbot.
+ - `assets/`: Stores essential data files and assets.
+ - `discord/`: Holds the Discord bot code and configuration.
+ - `web/`: Contains the web interface code and assets.
+ - `log/`: Contains log files for error and application logs.
 
  ## Installation
  
@@ -74,11 +74,11 @@ STELLA can search Wikipedia for information. To use this feature, simply type `w
 
 Error messages are logged in the following files:
 
- - **log/error.log:** Logs unhandled errors.
- - **log/log_app.txt:** Logs application-related information.
- - **log/log_CL.txt:** Logs command-line interface interactions.
- - **log/log_discord.txt:** Logs Discord bot interactions.
- - **log/log_web.txt:** Logs web interface interactions.
+ - `log/error.log`: Logs unhandled errors.
+ - `log/log_app.txt`: Logs application-related information.
+ - `log/log_CL.txt`: Logs command-line interface interactions.
+ - `log/log_discord.txt`: Logs Discord bot interactions.
+ - `log/log_web.txt`: Logs web interface interactions.
 
  ## Configuration
  
