@@ -1,1 +1,1 @@
-Expected content for log_app.txt
+
