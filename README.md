@@ -2,17 +2,17 @@
  
  ## Table of Contents
 
- - [Introduction]()
- - [Project Structure]()
- - [Installation]()
- - [Usage]()
- - [Configuration]()
- - [Discord Bot]()
- - [Web Interface]()
- - [Wikipedia Search]()
- - [Error Handling]()
- - [Contributing]()
- - [License]()
+ - [Introduction](#introduction)
+ - [Project Structure](#project-structure)
+ - [Installation](#installation)
+ - [Usage](#usage)
+ - [Configuration](#configuration)
+ - [Discord Bot](#discord-bot)
+ - [Web Interface](#web-interface)
+ - [Wikipedia Search](#wikipedia-search)
+ - [Error Handling](#error-handling)
+ - [Contributing](#contributing)
+ - [License](#license)
 
  ## Introduction
  
