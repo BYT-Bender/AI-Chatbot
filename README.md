@@ -95,7 +95,7 @@ If you want to contribute to the STELLA project, please follow these steps:
 
  ## License
  
-This project is licensed under the **Attribution-NonCommercial (CC BY-NC) License**. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Attribution-NonCommercial (CC BY-NC) License**. See the [LICENSE](https://creativecommons.org/licenses/by-nc/4.0/) file for details.
 
 ### License Summary
 
