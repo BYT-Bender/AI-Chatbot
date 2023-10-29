@@ -119,4 +119,4 @@ This project is licensed under the **Attribution-NonCommercial (CC BY-NC) Licens
 
 ## Author
 
-BYT-Bender
+**Sourabh Srivastva** (a.k.a. BYT-Bender)
