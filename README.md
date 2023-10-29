@@ -31,7 +31,7 @@ STELLA is an AI Chatbot that provides various functionalities through a Discord 
 1. Clone the repository:
 
 ```
-git clone https://github.com/your_username/your_project.git
+git clone https://github.com/BYT-Bender/AI-Chatbot.git
 ```
 
 2. Set up the Python environment:
