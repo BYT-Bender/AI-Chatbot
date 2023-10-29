@@ -94,4 +94,29 @@ If you want to contribute to the STELLA project, please follow these steps:
 4. Submit a pull request.
 
  ## License
-This project is licensed under the XYZ License. See the [LICENSE]() file for details.
+ 
+This project is licensed under the **Attribution-NonCommercial (CC BY-NC) License**. See the [LICENSE](LICENSE) file for details.
+
+### License Summary
+
+- **Share:** The licensed material can be shared, copied, and redistributed.
+- **Adapt:** The licensed material can be remixed, transformed, and built upon.
+
+#### Under the following terms:
+
+- **Attribution:** You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+
+- **Non-Commercial:** You may not use the material for commercial purposes. Commercial use is not allowed without the licensor's permission.
+
+- **No Derivatives:** If you remix, transform, or build upon the material, you may not distribute the modified material.
+
+### In Summary:
+
+- **Allowed:** Sharing, copying, redistribution, adaptation (with attribution).
+- **Not Allowed:** Commercial use without permission, distribution of derivative works without permission.
+
+---
+
+## Author
+
+BYT-Bender
