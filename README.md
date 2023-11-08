@@ -82,7 +82,7 @@ Error messages are logged in the following files:
 
  ## Configuration
  
-Customization of STELLA can be done through configuration files and environment variables. Configuration files are stored in the `config/` directory, and environment variables can be set as needed.
+Customization of STELLA can be done through configuration files and environment variables. Configuration files are stored in the `config/` directory, and environment variables can be set as needed. See [CONFIG GUIDE](documentation/Configuration.md) for more details.
 
  ## Contributing
 
