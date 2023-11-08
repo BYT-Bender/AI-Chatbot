@@ -4,9 +4,9 @@ STELLA is an AI Chatbot that you can configure to perform various tasks. This gu
 
  ## Table of Contents
 
- - [Bot Configuration]()
- - [Discord Configuration]()
- - [Wikipedia Configuration]()
+ - [Bot Configuration](#bot-configuration)
+ - [Discord Configuration](#discord-configuration)
+ - [Wikipedia Configuration](#wikipedia-configuration)
 
  ## Bot Configuration
 
