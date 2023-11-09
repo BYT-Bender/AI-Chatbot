@@ -1,5 +1,71 @@
 # Release Note for AI Chatbot
 
+## 1.0.0
+
+### New Features
+
+- Chatbot recognizes user queries through predefined patterns.
+- Customizable responses associated with patterns or user messages.
+- Consistent text preprocessing for enhanced matching.
+- Logging of unrecognized messages.
+- Set of secure admin commands.
+    - `reload patterns`
+    - `reload responses`
+    - `reload admin commands`
+- Vocalization of responses using pyttsx3 library.
+- User-friendly exit with "exit" or "quit."
+- Validation of admin commands and passwords.
+
+
+## 1.1.0
+
+### New Features
+
+- Integrate Flask server with a web interface.
+- Introduced Python GUI application.
+
+## 1.1.1
+
+### Enhancements
+
+- Added light, dark, and system appearance modes for the Python application.
+- Enabled adjustable UI scaling for a more personalized user experience.
+
+
+## 1.2.0
+
+### New Features
+
+- Settings customization through config.json.
+- Dynamic asset initialization.
+- Enhanced sound notifications with varied frequencies.
+
+### Enhancements
+
+- Improved handling of leading/trailing whitespaces.
+- Patterns and intents consolidated in intents_data.py.
+
+
+## 1.3.0
+
+### Major Changes
+
+- Comprehensive error handling during critical processes.
+- Configurable chatbot voice through config.json.
+- Checks for required modules during startup.
+- New formatting.py for customizable text styles.
+
+### Improvements and Fixes
+
+- Graceful handling of FileNotFoundError.
+- Color-coded feedback messages on reload status.
+- Improved handling for invalid commands and password mismatches.
+- More robust TTS engine initialization.
+- Clear error message and graceful exit for missing config file.
+
+
+------
+
 ## Version 1.0
 
 ### Features:
