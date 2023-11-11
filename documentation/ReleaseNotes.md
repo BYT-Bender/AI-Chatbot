@@ -18,7 +18,7 @@
 - User-friendly exit with "exit" or "quit."
 - Validation of admin commands and passwords.
 
-## 1.1.0 (Beta)
+## 1.1.0
 
 > July 21, 2023
 
@@ -27,7 +27,7 @@
 - Integrated Flask server with a web interface.
 - Introduced Python GUI application.
 
-## 1.1.1 (Beta)
+## 1.1.1
 
 > July 22, 2023
 
@@ -36,7 +36,7 @@
 - Added light, dark, and system appearance modes for the Python application.
 - Enabled adjustable UI scaling for a more personalized user experience.
 
-## 1.2.0 (Beta)
+## 1.2.0
 
 > September 24, 2023
 
@@ -51,7 +51,7 @@
 - Improved handling of leading/trailing whitespaces.
 - Patterns and intents consolidated in `intents_data.py`.
 
-## 1.3.0 (Beta)
+## 1.3.0
 
 > September 26, 2023
 
