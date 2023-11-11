@@ -78,7 +78,7 @@
 - Improved error logging for troubleshooting.
 - Responses and commands loaded from external files.
 - Documentation and Additional Files.
-- Included requirements.txt for easy dependency installation.
+- Included `requirements.txt` for easy dependency installation.
 
 ### Bug Fixes
 
@@ -120,38 +120,32 @@
 - Ensure accuracy of chemical element data.
 
 
-Version 7.0 (Stable)
-Features and Enhancements
-Major Code Refactoring (7.0.1)
-Significant restructuring and cleanup for better maintainability.
-GUI Integration (7.0.2)
-Introduction of a graphical user interface for user-friendly interaction.
-Server Integration (7.0.3)
-Accessibility through a Flask server for web-based interactions.
-Voice Interaction (7.0.4)
-Text-to-Speech (TTS) functionality for spoken responses.
-Element Searching (7.0.5)
-Feature to search for elements based on user queries.
-Wikipedia Search (7.0.6)
-Improved Wikipedia search for accurate and informative responses.
-Command Usage Tracking (7.0.7)
-Enhanced tracking of command usage for better analysis.
-Admin Commands (7.0.8)
-Additional admin commands for control and management.
-Error Handling (7.0.9)
-Improved error handling and logging mechanisms.
-Documentation Updates (7.0.10)
-Updated documentation to reflect changes.
-Bug Fixes
-Unrecognized Message Tracking (7.0.11)
-Fixed issues related to tracking unrecognized messages.
-Configuration Loading (7.0.12)
-Improved configuration loading for graceful handling.
-Other Changes
-File and Directory Verification (7.0.13)
-Script to check presence of expected files and directories.
-File Structure Information (7.0.14)
-Document detailing the file structure for better understanding.
+## 7.0.0 (Stable)
+
+### Features
+
+- Significant restructuring and cleanup for better maintainability.
+- Introduction of a graphical user interface for user-friendly interaction.
+- Accessibility through a Flask server for web-based interactions.
+- Feature to search for elements based on user queries.
+
+### Enhancements
+
+- Improved Wikipedia search for accurate and informative responses.
+- Enhanced tracking of command usage for better analysis.
+- Additional admin commands for control and management.
+- Improved error handling and logging mechanisms.
+- Updated documentation to reflect changes.
+
+### Bug Fixes
+
+- Fixed issues related to tracking unrecognized messages.
+- Improved configuration loading for graceful handling.
+
+### Other Changes
+
+- Script to check presence of expected files and directories.
+- Document detailing the file structure for better understanding.
 
 ------
 
