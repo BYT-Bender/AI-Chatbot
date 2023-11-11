@@ -51,7 +51,7 @@
 ### Major Changes
 
 - Comprehensive error handling during critical processes.
-- Configurable chatbot voice through config.json.
+- Configurable chatbot voice through `config.json`.
 - Checks for required modules during startup.
 - New formatting.py for customizable text styles.
 
@@ -63,6 +63,95 @@
 - More robust TTS engine initialization.
 - Clear error message and graceful exit for missing config file.
 
+
+## 2.0.0
+
+### New Features
+
+- Flask integration for web-based UI.
+- Integrated TTS for spoken responses.
+- Response usage analysis with `analize.py`.
+
+### Enhancements
+
+- Dynamic response reloading during runtime.
+- Improved error logging for troubleshooting.
+- Responses and commands loaded from external files.
+- Documentation and Additional Files.
+- Included requirements.txt for easy dependency installation.
+
+### Bug Fixes
+
+- Improved handling of special characters and whitespace.
+- Enhanced exception handling for better error reporting.
+
+
+## 3.0.0 (Stable)
+
+### New Features
+
+- Chatbot provides details about chemical elements.
+- Sleek GUI using tkinter for user-friendly interaction.
+- Track command and response usage for analysis.
+- Module for matching user messages to predefined patterns.
+- Searches for response on wikipedia.
+
+### Code Organization
+
+- Code organized into separate files for modularity.
+- Improved readability with files like chatbot.py and gui.py.
+- Comprehensive element data in the elements folder.
+- Utility module for logging and error handling.
+
+### Bug Fixes
+
+- Changed admin_commands.csv to admin_commands.json.
+- Improved data handling and error logging.
+
+### Enhancements
+
+- System sound alert upon startup.
+- Configuration for chatbot voice.
+- Improved fallback response for user engagement.
+
+### Known Issues
+
+- Minor GUI layout issues on different screen sizes.
+- Ensure accuracy of chemical element data.
+
+
+Version 7.0 (Stable)
+Features and Enhancements
+Major Code Refactoring (7.0.1)
+Significant restructuring and cleanup for better maintainability.
+GUI Integration (7.0.2)
+Introduction of a graphical user interface for user-friendly interaction.
+Server Integration (7.0.3)
+Accessibility through a Flask server for web-based interactions.
+Voice Interaction (7.0.4)
+Text-to-Speech (TTS) functionality for spoken responses.
+Element Searching (7.0.5)
+Feature to search for elements based on user queries.
+Wikipedia Search (7.0.6)
+Improved Wikipedia search for accurate and informative responses.
+Command Usage Tracking (7.0.7)
+Enhanced tracking of command usage for better analysis.
+Admin Commands (7.0.8)
+Additional admin commands for control and management.
+Error Handling (7.0.9)
+Improved error handling and logging mechanisms.
+Documentation Updates (7.0.10)
+Updated documentation to reflect changes.
+Bug Fixes
+Unrecognized Message Tracking (7.0.11)
+Fixed issues related to tracking unrecognized messages.
+Configuration Loading (7.0.12)
+Improved configuration loading for graceful handling.
+Other Changes
+File and Directory Verification (7.0.13)
+Script to check presence of expected files and directories.
+File Structure Information (7.0.14)
+Document detailing the file structure for better understanding.
 
 ------
 
