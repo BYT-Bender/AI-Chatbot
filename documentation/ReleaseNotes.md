@@ -1,4 +1,4 @@
-# Release Note for AI Chatbot
+# Release Notes for AI Chatbot
 
 ## 1.0.0
 
@@ -8,20 +8,19 @@
 - Customizable responses associated with patterns or user messages.
 - Consistent text preprocessing for enhanced matching.
 - Logging of unrecognized messages.
-- Set of secure admin commands.
-    - `reload patterns`
-    - `reload responses`
-    - `reload admin commands`
-- Vocalization of responses using pyttsx3 library.
+- Set of secure admin commands:
+  - `reload patterns`
+  - `reload responses`
+  - `reload admin commands`
+- Vocalization of responses using the pyttsx3 library.
 - User-friendly exit with "exit" or "quit."
 - Validation of admin commands and passwords.
-
 
 ## 1.1.0
 
 ### New Features
 
-- Integrate Flask server with a web interface.
+- Integrated Flask server with a web interface.
 - Introduced Python GUI application.
 
 ## 1.1.1
@@ -31,20 +30,18 @@
 - Added light, dark, and system appearance modes for the Python application.
 - Enabled adjustable UI scaling for a more personalized user experience.
 
-
 ## 1.2.0
 
 ### New Features
 
-- Settings customization through config.json.
+- Settings customization through `config.json`.
 - Dynamic asset initialization.
 - Enhanced sound notifications with varied frequencies.
 
 ### Enhancements
 
 - Improved handling of leading/trailing whitespaces.
-- Patterns and intents consolidated in intents_data.py.
-
+- Patterns and intents consolidated in `intents_data.py`.
 
 ## 1.3.0
 
@@ -53,16 +50,15 @@
 - Comprehensive error handling during critical processes.
 - Configurable chatbot voice through `config.json`.
 - Checks for required modules during startup.
-- New formatting.py for customizable text styles.
+- New `formatting.py` for customizable text styles.
 
 ### Improvements and Fixes
 
-- Graceful handling of FileNotFoundError.
+- Graceful handling of `FileNotFoundError`.
 - Color-coded feedback messages on reload status.
 - Improved handling for invalid commands and password mismatches.
 - More robust TTS engine initialization.
 - Clear error message and graceful exit for missing config file.
-
 
 ## 2.0.0
 
@@ -85,7 +81,6 @@
 - Improved handling of special characters and whitespace.
 - Enhanced exception handling for better error reporting.
 
-
 ## 3.0.0 (Stable)
 
 ### New Features
@@ -94,18 +89,18 @@
 - Sleek GUI using tkinter for user-friendly interaction.
 - Track command and response usage for analysis.
 - Module for matching user messages to predefined patterns.
-- Searches for response on wikipedia.
+- Searches for response on Wikipedia.
 
 ### Code Organization
 
 - Code organized into separate files for modularity.
-- Improved readability with files like chatbot.py and gui.py.
-- Comprehensive element data in the elements folder.
+- Improved readability with files like `chatbot.py` and `gui.py`.
+- Comprehensive element data in the `elements` folder.
 - Utility module for logging and error handling.
 
 ### Bug Fixes
 
-- Changed admin_commands.csv to admin_commands.json.
+- Changed `admin_commands.csv` to `admin_commands.json`.
 - Improved data handling and error logging.
 
 ### Enhancements
@@ -118,7 +113,6 @@
 
 - Minor GUI layout issues on different screen sizes.
 - Ensure accuracy of chemical element data.
-
 
 ## 4.0.0 (Stable)
 
@@ -144,5 +138,5 @@
 
 ### Other Changes
 
-- Script to check presence of expected files and directories.
+- Script to check the presence of expected files and directories.
 - Document detailing the file structure for better understanding.
