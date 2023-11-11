@@ -104,13 +104,13 @@
 - Track command and response usage for analysis.
 - Module for matching user messages to predefined patterns.
 - Searches for response on Wikipedia.
+- Utility module for logging and error handling.
 
 ### Code Organization
 
 - Code organized into separate files for modularity.
 - Improved readability with files like `chatbot.py` and `gui.py`.
 - Comprehensive element data in the `elements` folder.
-- Utility module for logging and error handling.
 
 ### Bug Fixes
 
