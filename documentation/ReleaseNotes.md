@@ -1,6 +1,8 @@
 # Release Notes for AI Chatbot
 
-## 1.0.0
+## 1.0.0 (Alpha)
+
+> July 13, 2023
 
 ### New Features
 
@@ -18,6 +20,8 @@
 
 ## 1.1.0
 
+> July 21, 2023
+
 ### New Features
 
 - Integrated Flask server with a web interface.
@@ -25,12 +29,16 @@
 
 ## 1.1.1
 
+> July 22, 2023
+
 ### Enhancements
 
 - Added light, dark, and system appearance modes for the Python application.
 - Enabled adjustable UI scaling for a more personalized user experience.
 
 ## 1.2.0
+
+> September 24, 2023
 
 ### New Features
 
@@ -44,6 +52,8 @@
 - Patterns and intents consolidated in `intents_data.py`.
 
 ## 1.3.0
+
+> September 26, 2023
 
 ### Major Changes
 
@@ -61,6 +71,8 @@
 - Clear error message and graceful exit for missing config file.
 
 ## 2.0.0
+
+> October 2, 2023
 
 ### New Features
 
@@ -82,6 +94,8 @@
 - Enhanced exception handling for better error reporting.
 
 ## 3.0.0 (Stable)
+
+> October 14, 2023
 
 ### New Features
 
@@ -115,6 +129,8 @@
 - Ensure accuracy of chemical element data.
 
 ## 4.0.0 (Stable)
+
+> November 8, 2023
 
 ### Features
 
