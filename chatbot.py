@@ -1,5 +1,15 @@
 # Copyright © 2023 BYT-Bender
 
+# Dear fellow programmer:
+# When I wrote this code, only god and I knew how it worked.
+# Now, only god knows it!
+
+# Abandon all hope, ye who try to understand the following lines.
+# If you find a bug, consider it a feature - a hidden gem waiting to be discovered.
+
+# Please note: Attempting to optimize this code may result in the creation of a black hole,
+# sucking in all nearby productivity. Proceed with caution, or better yet, just don't.
+
 # Import necessary modules
 import json
 from datetime import datetime
