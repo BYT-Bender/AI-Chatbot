@@ -1,4 +1,4 @@
-D:.
+Parent_Directory
 │   chatbot.py
 │   config.json
 │   gui.py
